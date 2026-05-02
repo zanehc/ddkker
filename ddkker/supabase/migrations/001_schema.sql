@@ -164,33 +164,6 @@ CREATE TABLE faqs (
 );
 
 -- ─────────────────────────────────────────────
--- 봇 태스크 큐
--- ─────────────────────────────────────────────
-CREATE TABLE bot_tasks (
-  id BIGSERIAL PRIMARY KEY,
-  task_type TEXT NOT NULL
-    CHECK (task_type IN ('thumbnail','qa-assist','notification')),
-  payload JSONB,
-  status TEXT NOT NULL DEFAULT 'pending'
-    CHECK (status IN ('pending','claimed','done','failed')),
-  result JSONB,
-  attempts INTEGER NOT NULL DEFAULT 0,
-  max_attempts INTEGER NOT NULL DEFAULT 3,
-  worker_id TEXT,
-  error TEXT,
-  priority INTEGER NOT NULL DEFAULT 0,
-  idempotency_key TEXT,
-  claimed_at TIMESTAMPTZ,
-  heartbeat_at TIMESTAMPTZ,
-  scheduled_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
-CREATE UNIQUE INDEX bot_tasks_idempotency_idx
-  ON bot_tasks(idempotency_key)
-  WHERE idempotency_key IS NOT NULL;
-
--- ─────────────────────────────────────────────
 -- 감사 로그 (관리자 작업 추적)
 -- ─────────────────────────────────────────────
 CREATE TABLE audit_logs (

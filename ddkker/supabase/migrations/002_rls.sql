@@ -97,7 +97,7 @@ CREATE POLICY "comments_admin" ON comments
   FOR ALL USING (is_admin());
 
 -- ─────────────────────────────────────────────
--- faqs, audit_logs, bot_tasks
+-- faqs, audit_logs
 -- ─────────────────────────────────────────────
 ALTER TABLE faqs ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "faqs_select_published" ON faqs FOR SELECT USING (published = true);
@@ -105,8 +105,3 @@ CREATE POLICY "faqs_admin" ON faqs FOR ALL USING (is_admin());
 
 ALTER TABLE audit_logs ENABLE ROW LEVEL SECURITY;
 -- service role 전용
-
-ALTER TABLE bot_tasks ENABLE ROW LEVEL SECURITY;
--- service role 전용 (봇 워커와 관리자 API만 접근)
-CREATE POLICY "bot_tasks_admin_select" ON bot_tasks
-  FOR SELECT USING (is_admin());

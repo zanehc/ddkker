@@ -7,9 +7,9 @@ const FEATURES = [
   },
   {
     icon: "🤖",
-    title: "봇이 운영을 자동화",
+    title: "자동화봇 강의도 함께",
     description:
-      "썸네일 생성, Q&A 초안, 알림 발송. Oracle Cloud 봇이 24시간 사이트를 관리합니다.",
+      "Claude CLI, Codex CLI로 자동화봇을 직접 만드는 강의. 실제 작동하는 코드를 따라 만들며 배웁니다.",
   },
   {
     icon: "🚀",

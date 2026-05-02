@@ -18,7 +18,6 @@ export default async function AdminDashboard() {
     { count: memberCount },
     { count: postCount },
     { data: recentProfiles },
-    { data: failedTasks },
   ] = await Promise.all([
     adminClient.from("courses").select("id", { count: "exact", head: true }).eq("published", true),
     adminClient.from("resources").select("id", { count: "exact", head: true }).eq("published", true),
@@ -27,12 +26,6 @@ export default async function AdminDashboard() {
     adminClient
       .from("profiles")
       .select("id, display_name, provider, created_at")
-      .order("created_at", { ascending: false })
-      .limit(5),
-    adminClient
-      .from("bot_tasks")
-      .select("id, task_type, error, attempts, max_attempts, created_at")
-      .eq("status", "failed")
       .order("created_at", { ascending: false })
       .limit(5),
   ]);
@@ -91,53 +84,19 @@ export default async function AdminDashboard() {
           )}
         </section>
 
-        {/* 실패한 봇 태스크 */}
+        {/* 최근 커뮤니티 글 */}
         <section className="bg-canvas border border-hairline rounded-xl p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-title-md font-semibold text-ink">
-              실패한 봇 태스크
+              커뮤니티
             </h2>
-            <Link
-              href="/admin/bot-tasks"
-              className="text-xs text-primary hover:underline"
-            >
+            <Link href="/community" className="text-xs text-primary hover:underline">
               전체 보기
             </Link>
           </div>
-          {(failedTasks ?? []).length === 0 ? (
-            <p className="text-muted text-sm text-success">
-              실패한 태스크가 없습니다.
-            </p>
-          ) : (
-            <div className="space-y-3">
-              {(failedTasks ?? []).map((task) => (
-                <div
-                  key={task.id}
-                  className="flex items-start gap-3 p-3 bg-red-50 rounded-lg"
-                >
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-mono font-semibold text-red-600 uppercase">
-                        {task.task_type}
-                      </span>
-                      <span className="text-xs text-muted">
-                        #{task.id}
-                      </span>
-                    </div>
-                    {task.error && (
-                      <p className="text-xs text-red-500 mt-1 line-clamp-2">
-                        {task.error}
-                      </p>
-                    )}
-                    <p className="text-xs text-muted mt-1">
-                      {task.attempts}/{task.max_attempts}회 시도 ·{" "}
-                      {new Date(task.created_at).toLocaleDateString("ko-KR")}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+          <p className="text-sm text-muted">
+            총 <span className="font-semibold text-ink">{postCount ?? 0}</span>개의 게시글이 있습니다.
+          </p>
         </section>
       </div>
 

@@ -18,51 +18,6 @@ BEGIN
 END;
 $$;
 
--- 봇 태스크 atomic claim (FOR UPDATE SKIP LOCKED)
-CREATE OR REPLACE FUNCTION claim_bot_task(p_worker_id TEXT)
-RETURNS SETOF bot_tasks LANGUAGE plpgsql SECURITY DEFINER AS $$
-BEGIN
-  RETURN QUERY
-  WITH next_task AS (
-    SELECT id FROM bot_tasks
-    WHERE status = 'pending'
-      AND scheduled_at <= NOW()
-      AND attempts < max_attempts
-    ORDER BY priority ASC, created_at ASC
-    FOR UPDATE SKIP LOCKED
-    LIMIT 1
-  )
-  UPDATE bot_tasks t
-  SET
-    status       = 'claimed',
-    worker_id    = p_worker_id,
-    claimed_at   = NOW(),
-    heartbeat_at = NOW(),
-    attempts     = attempts + 1
-  FROM next_task
-  WHERE t.id = next_task.id
-  RETURNING t.*;
-END;
-$$;
-
--- stuck task 복구 (claimed 상태로 10분 이상 heartbeat 없는 태스크를 pending으로)
-CREATE OR REPLACE FUNCTION recover_stuck_bot_tasks()
-RETURNS INTEGER LANGUAGE plpgsql SECURITY DEFINER AS $$
-DECLARE recovered INTEGER;
-BEGIN
-  WITH recovered_tasks AS (
-    UPDATE bot_tasks
-    SET status = 'pending', worker_id = NULL, claimed_at = NULL
-    WHERE status = 'claimed'
-      AND heartbeat_at < NOW() - INTERVAL '10 minutes'
-      AND attempts < max_attempts
-    RETURNING id
-  )
-  SELECT COUNT(*) INTO recovered FROM recovered_tasks;
-  RETURN recovered;
-END;
-$$;
-
 -- 관리자 감사 로그 기록
 CREATE OR REPLACE FUNCTION log_admin_action(
   p_action TEXT,

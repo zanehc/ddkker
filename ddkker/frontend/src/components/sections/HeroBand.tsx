@@ -19,7 +19,7 @@ export function HeroBand() {
             </h1>
             <p className="text-body text-lg leading-relaxed mb-8 max-w-[480px]">
               Claude Code, Codex, Supabase로 코드 없이 프로덕트를 출시하는 법.
-              봇이 사이트를 운영하는 과정 자체가 강의입니다.
+              실제 사이트를 직접 만들며 배우는 실전 강의입니다.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <Button href="/courses" variant="primary" size="lg">
@@ -33,13 +33,13 @@ export function HeroBand() {
 
           {/* 우측: 코드 창 */}
           <div className="hidden md:block">
-            <CodeWindow title="claude — ddkker-bot">
-              {`$ claude -p "강의 썸네일 만들어줘" \\
-  --output-format text
+            <CodeWindow title="claude — ddkker">
+              {`$ claude -p "로그인 페이지 만들어줘"
 
-✓ 이미지 생성 중...
-✓ R2 업로드 완료
-✓ DB 업데이트: course_id=42
+✓ Supabase Auth 설정 완료
+✓ Google OAuth 콜백 라우트 생성
+✓ 프로필 자동 생성 trigger 추가
+✓ middleware.ts 세션 갱신 설정
 
 딸깍. 끝.`}
             </CodeWindow>
