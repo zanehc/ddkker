@@ -1,0 +1,18 @@
+[Unit]
+Description=ddkkbot Task Worker
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/opt/ddkkbot
+EnvironmentFile=/opt/ddkkbot/.env
+ExecStart=/opt/ddkkbot/.venv/bin/python worker.py
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

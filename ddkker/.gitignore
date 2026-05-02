@@ -1,0 +1,25 @@
+# Dependencies
+frontend/node_modules/
+bot/__pycache__/
+bot/*.pyc
+bot/.venv/
+
+# Build output
+frontend/.next/
+frontend/out/
+
+# Environment variables
+frontend/.env.local
+frontend/.env.production
+bot/.env
+
+# OS
+.DS_Store
+*.DS_Store
+
+# TypeScript
+frontend/tsconfig.tsbuildinfo
+
+# Logs
+bot/logs/
+*.log
