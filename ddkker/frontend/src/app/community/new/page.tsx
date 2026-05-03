@@ -64,7 +64,7 @@ export default function NewPostPage() {
           >
             ← 커뮤니티로 돌아가기
           </a>
-          <h1 className="text-display-md font-serif font-normal text-ink">
+          <h1 className="text-display-md font-bold text-ink">
             글쓰기
           </h1>
         </div>

@@ -40,7 +40,7 @@ export default function YouTubePage() {
       <div className="max-w-[1200px] mx-auto px-6 py-16">
         {/* 헤더 */}
         <div className="mb-12">
-          <h1 className="text-display-lg font-serif font-normal text-ink mb-3">
+          <h1 className="text-display-lg font-bold text-ink mb-3">
             YouTube
           </h1>
           <p className="text-muted text-lg">

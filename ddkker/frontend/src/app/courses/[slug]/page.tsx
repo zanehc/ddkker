@@ -91,7 +91,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
             </div>
 
             {/* 제목 */}
-            <h1 className="text-display-md font-serif font-normal text-ink mb-4">
+            <h1 className="text-display-md font-bold text-ink mb-4">
               {course.title}
             </h1>
 

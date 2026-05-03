@@ -24,7 +24,7 @@ export function FeatureCards() {
     <section className="bg-surface-soft py-20">
       <div className="max-w-[1200px] mx-auto px-6">
         <div className="text-center mb-12">
-          <h2 className="text-display-md font-serif font-normal text-ink mb-4">
+          <h2 className="text-display-md font-bold text-ink mb-4">
             왜 딸깍러인가요?
           </h2>
           <p className="text-muted text-lg max-w-[560px] mx-auto">

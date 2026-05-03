@@ -9,7 +9,7 @@ export default function TermsPage() {
   return (
     <main className="bg-canvas min-h-screen">
       <div className="max-w-[800px] mx-auto px-6 py-16 prose prose-sm">
-        <h1 className="font-serif font-normal text-display-md text-ink">
+        <h1 className="font-bold text-display-md text-ink">
           이용약관
         </h1>
         <p className="text-muted">최종 수정일: 2026년 5월 1일</p>

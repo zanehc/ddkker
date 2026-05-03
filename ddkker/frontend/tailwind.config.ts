@@ -34,9 +34,10 @@ const config: Config = {
         "body-strong":  "#252523",
       },
       fontFamily: {
-        serif: ['"Noto Serif KR"', '"Noto Serif"', "Georgia", "serif"],
-        sans:  ["Pretendard", "-apple-system", '"Apple SD Gothic Neo"', "sans-serif"],
-        mono:  ['"JetBrains Mono"', '"Fira Code"', "monospace"],
+        sans:    ["HakgyoanSimAllimjang", "-apple-system", "sans-serif"],
+        serif:   ["HakgyoanSimAllimjang", "-apple-system", "sans-serif"],
+        display: ["HakgyoanSimAllimjang", "-apple-system", "sans-serif"],
+        mono:    ['"JetBrains Mono"', '"Fira Code"', "monospace"],
       },
       fontSize: {
         "display-xl": ["56px", { lineHeight: "1.1",  letterSpacing: "-1.2px" }],

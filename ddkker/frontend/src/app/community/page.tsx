@@ -55,7 +55,7 @@ export default async function CommunityPage({ searchParams }: PageProps) {
         {/* 헤더 */}
         <div className="flex items-end justify-between mb-8">
           <div>
-            <h1 className="text-display-lg font-serif font-normal text-ink mb-2">
+            <h1 className="text-display-lg font-bold text-ink mb-2">
               커뮤니티
             </h1>
             <p className="text-muted">

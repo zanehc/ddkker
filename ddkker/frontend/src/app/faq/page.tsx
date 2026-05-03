@@ -47,7 +47,7 @@ export default async function FaqPage({ searchParams }: PageProps) {
       <div className="max-w-[800px] mx-auto px-6 py-16">
         {/* 헤더 */}
         <div className="text-center mb-12">
-          <h1 className="text-display-lg font-serif font-normal text-ink mb-4">
+          <h1 className="text-display-lg font-bold text-ink mb-4">
             자주 묻는 질문
           </h1>
           <p className="text-muted text-lg">

@@ -45,7 +45,7 @@ export function PricingTiers() {
     <section className="bg-canvas py-20">
       <div className="max-w-[1200px] mx-auto px-6">
         <div className="text-center mb-12">
-          <h2 className="text-display-md font-serif font-normal text-ink mb-4">
+          <h2 className="text-display-md font-bold text-ink mb-4">
             멤버십 플랜
           </h2>
           <p className="text-muted text-lg max-w-[480px] mx-auto">
@@ -74,7 +74,7 @@ export function PricingTiers() {
                   {tier.name}
                 </h3>
                 <div className="flex items-baseline gap-2 mb-2">
-                  <span className="text-display-sm font-serif font-normal text-ink">
+                  <span className="text-display-sm font-bold text-ink">
                     {tier.price}
                   </span>
                   <span className="text-muted text-sm">{tier.period}</span>

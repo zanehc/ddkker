@@ -33,7 +33,7 @@ export default async function HomePage() {
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="flex items-end justify-between mb-10">
             <div>
-              <h2 className="text-display-md font-serif font-normal text-ink mb-2">
+              <h2 className="text-display-md font-bold text-ink mb-2">
                 최신 강의
               </h2>
               <p className="text-muted">지금 바로 시작할 수 있는 무료 강의</p>
@@ -115,7 +115,7 @@ export default async function HomePage() {
       {/* 인디고 콜아웃 */}
       <section className="bg-primary py-20">
         <div className="max-w-[1200px] mx-auto px-6 text-center">
-          <h2 className="text-display-md font-serif font-normal text-white mb-4">
+          <h2 className="text-display-md font-bold text-white mb-4">
             지금 바로 바이브코딩을 시작하세요
           </h2>
           <p className="text-white/70 text-lg mb-8 max-w-[480px] mx-auto">

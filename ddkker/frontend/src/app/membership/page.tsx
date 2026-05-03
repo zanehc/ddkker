@@ -28,7 +28,7 @@ export default async function MembershipPage() {
       {/* 헤더 */}
       <section className="bg-surface-soft py-20 border-b border-hairline">
         <div className="max-w-[1200px] mx-auto px-6 text-center">
-          <h1 className="text-display-lg font-serif font-normal text-ink mb-4">
+          <h1 className="text-display-lg font-bold text-ink mb-4">
             멤버십
           </h1>
           <p className="text-muted text-lg max-w-[560px] mx-auto">
@@ -44,7 +44,7 @@ export default async function MembershipPage() {
       {/* 혜택 상세 */}
       <section className="bg-surface-soft py-20">
         <div className="max-w-[1200px] mx-auto px-6">
-          <h2 className="text-display-sm font-serif font-normal text-ink text-center mb-12">
+          <h2 className="text-display-sm font-bold text-ink text-center mb-12">
             프리미엄 멤버십 혜택
           </h2>
 
@@ -89,7 +89,7 @@ export default async function MembershipPage() {
       {faqs.length > 0 && (
         <section className="bg-canvas py-20">
           <div className="max-w-[800px] mx-auto px-6">
-            <h2 className="text-display-sm font-serif font-normal text-ink text-center mb-10">
+            <h2 className="text-display-sm font-bold text-ink text-center mb-10">
               자주 묻는 질문
             </h2>
             <FaqAccordion faqs={faqs} />

@@ -49,7 +49,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
       <div className="max-w-[1200px] mx-auto px-6 py-16">
         {/* 헤더 */}
         <div className="mb-10">
-          <h1 className="text-display-lg font-serif font-normal text-ink mb-3">
+          <h1 className="text-display-lg font-bold text-ink mb-3">
             무료강의
           </h1>
           <p className="text-muted text-lg">

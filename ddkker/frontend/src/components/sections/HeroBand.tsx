@@ -12,7 +12,7 @@ export function HeroBand() {
               <span className="text-primary font-mono">▌</span>
               바이브코딩 강의 플랫폼
             </div>
-            <h1 className="text-display-lg md:text-display-xl font-serif font-normal text-ink leading-tight mb-6">
+            <h1 className="text-display-lg md:text-display-xl font-bold text-ink leading-tight mb-6">
               AI와 대화만으로
               <br />
               <span className="text-primary">SaaS를 만든다</span>

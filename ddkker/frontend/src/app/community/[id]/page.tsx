@@ -93,7 +93,7 @@ export default async function PostDetailPage({ params }: PageProps) {
 
         {/* 게시글 헤더 */}
         <div className="mb-8">
-          <h1 className="text-display-sm font-serif font-normal text-ink mb-4">
+          <h1 className="text-display-sm font-bold text-ink mb-4">
             {post.title}
           </h1>
           <div className="flex items-center gap-4 text-sm text-muted">
