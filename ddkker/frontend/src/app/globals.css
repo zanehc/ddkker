@@ -5,25 +5,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── 학교안심알림장 폰트 ────────────────────────────────── */
-@font-face {
-  font-family: "HakgyoanSimAllimjang";
-  src: url("/fonts/HakgyoanSimAllimjang-R.otf") format("opentype"),
-       url("/fonts/HakgyoanSimAllimjang-R.ttf") format("truetype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "HakgyoanSimAllimjang";
-  src: url("/fonts/HakgyoanSimAllimjang-B.otf") format("opentype"),
-       url("/fonts/HakgyoanSimAllimjang-B.ttf") format("truetype");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
 @layer base {
   :root {
     --color-canvas: #faf9f5;
@@ -32,7 +13,7 @@
   }
 
   html {
-    font-family: "HakgyoanSimAllimjang", -apple-system, sans-serif;
+    font-family: var(--font-hakgyoan), -apple-system, sans-serif;
     font-weight: 400;
     background-color: #faf9f5;
     color: #141413;
@@ -45,9 +26,8 @@
     min-height: 100vh;
   }
 
-  /* 헤딩은 B (Bold) */
   h1, h2, h3, h4, h5, h6 {
-    font-family: "HakgyoanSimAllimjang", -apple-system, sans-serif;
+    font-family: var(--font-hakgyoan), -apple-system, sans-serif;
     font-weight: 700;
   }
 
@@ -76,9 +56,8 @@
     @apply py-section;
   }
 
-  /* B (Bold) — 강조 텍스트, 로고, 버튼 레이블 등 */
   .font-display {
-    font-family: "HakgyoanSimAllimjang", -apple-system, sans-serif;
+    font-family: var(--font-hakgyoan), -apple-system, sans-serif;
     font-weight: 700;
   }
 }

@@ -1,7 +1,17 @@
 import type { Metadata } from "next";
+import localFont from "next/font/local";
 import "./globals.css";
 import { TopNav } from "@/components/layout/TopNav";
 import { Footer } from "@/components/layout/Footer";
+
+const hakgyoan = localFont({
+  src: [
+    { path: "../../public/fonts/HakgyoanSimAllimjang-R.otf", weight: "400", style: "normal" },
+    { path: "../../public/fonts/HakgyoanSimAllimjang-B.otf", weight: "700", style: "normal" },
+  ],
+  variable: "--font-hakgyoan",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: {
@@ -26,8 +36,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ko">
-      <body className="bg-canvas text-ink antialiased">
+    <html lang="ko" className={hakgyoan.variable}>
+      <body className="bg-canvas text-ink antialiased" style={{ fontFamily: "var(--font-hakgyoan), -apple-system, sans-serif" }}>
         <TopNav />
         {children}
         <Footer />
