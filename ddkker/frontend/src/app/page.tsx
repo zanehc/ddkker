@@ -119,7 +119,7 @@ export default async function HomePage() {
             지금 바로 바이브코딩을 시작하세요
           </h2>
           <p className="text-white/70 text-lg mb-8 max-w-[480px] mx-auto">
-            Claude Code 하나로 SaaS를 만드는 방법, 딸깍러에서 배우세요.
+            Claude Code 하나로 SaaS를 만드는 방법, 딸깍테크닉에서 배우세요.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button href="/courses" variant="secondary" size="lg">

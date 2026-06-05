@@ -161,7 +161,8 @@ $$;
 
 ## 6. 영향 받는 파일 (예상)
 
-- DB: `supabase/migrations/005_premium_enrollments.sql`(스키마/RLS 교체), `006_seed_premium_courses.sql`(프로덕션 시드)
+- DB: `supabase/migrations/006_premium_enrollments.sql`(스키마/RLS 교체), `007_seed_premium_courses.sql`(프로덕션 시드)
+  - (005는 관리자 RLS/시드로 이미 사용됨)
 - 타입: `frontend/src/types/index.ts` (Membership 제거, Enrollment·Payment 추가, Course.price, Resource.course_id)
 - 페이지: `app/membership/page.tsx` → `app/premium/page.tsx`(+ redirect), `app/courses/[slug]/page.tsx`
 - 컴포넌트: `components/sections/PricingTiers.tsx` 제거, `components/sections/PremiumCourses.tsx` 신설, `components/layout/TopNav.tsx`

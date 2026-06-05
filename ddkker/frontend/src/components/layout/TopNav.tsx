@@ -1,9 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
+import { createClient } from "@/lib/supabase/client";
+import type { User } from "@supabase/supabase-js";
 
 const NAV_LINKS = [
   { label: "소개", href: "/" },
@@ -15,13 +18,48 @@ const NAV_LINKS = [
   { label: "YOUTUBE", href: "/youtube" },
 ] as const;
 
+type NavUser = { name: string; avatarUrl: string | null };
+
+function toNavUser(user: User | null): NavUser | null {
+  if (!user) return null;
+  const meta = user.user_metadata ?? {};
+  return {
+    name: meta.full_name ?? meta.name ?? user.email ?? "사용자",
+    avatarUrl: meta.avatar_url ?? null,
+  };
+}
+
 /**
  * TopNav — 64px 높이, canvas 배경
  * DESIGN.md: 좌-로고, 중-네비, 우-로그인+CTA
  * 모바일: 햄버거 → 전체화면 크림 시트
+ *
+ * 인증 상태는 클라이언트에서 onAuthStateChange로 구독한다.
+ * (layout에서 서버 cookies()를 읽으면 ISR 페이지가 동적 렌더링으로 바뀌므로 클라에서 처리)
  */
 export function TopNav() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [user, setUser] = useState<NavUser | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    const supabase = createClient();
+    // 구독 시 INITIAL_SESSION 이벤트로 현재 세션이 즉시 전달된다.
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(toNavUser(session?.user ?? null));
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  async function handleSignOut() {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    setUser(null);
+    setMobileOpen(false);
+    router.refresh();
+  }
 
   return (
     <header className="h-16 bg-canvas border-b border-hairline sticky top-0 z-50">
@@ -33,7 +71,7 @@ export function TopNav() {
           onClick={() => setMobileOpen(false)}
         >
           <span className="text-primary font-mono text-lg leading-none">▌</span>
-          <span className="font-display tracking-tight">딸깍러</span>
+          <span className="font-display tracking-tight">딸깍테크닉</span>
         </Link>
 
         {/* 데스크톱 네비게이션 */}
@@ -50,16 +88,53 @@ export function TopNav() {
         </nav>
 
         {/* 우측 액션 — 데스크톱 */}
-        <div className="hidden md:flex items-center gap-3 shrink-0">
-          <Link
-            href="/auth/login"
-            className="text-sm font-medium text-primary hover:underline"
-          >
-            로그인
-          </Link>
-          <Button href="/membership" variant="primary" size="md">
-            무료 시작하기
-          </Button>
+        <div className="hidden md:flex items-center gap-4 shrink-0">
+          {user ? (
+            <>
+              <Link
+                href="/classroom"
+                className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors"
+              >
+                내 강의실
+              </Link>
+              <Link
+                href="/mypage"
+                className="text-sm font-medium text-muted hover:text-ink transition-colors"
+              >
+                마이페이지
+              </Link>
+              <span className="flex items-center gap-2 text-sm font-medium text-ink border-l border-hairline pl-4">
+                {user.avatarUrl && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={user.avatarUrl}
+                    alt=""
+                    referrerPolicy="no-referrer"
+                    className="w-7 h-7 rounded-full object-cover border border-hairline"
+                  />
+                )}
+                <span className="max-w-[120px] truncate">{user.name}</span>
+              </span>
+              <button
+                onClick={handleSignOut}
+                className="text-sm font-medium text-muted hover:text-ink transition-colors"
+              >
+                로그아웃
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/auth/login"
+                className="text-sm font-medium text-primary hover:underline"
+              >
+                로그인
+              </Link>
+              <Button href="/membership" variant="primary" size="md">
+                무료 시작하기
+              </Button>
+            </>
+          )}
         </div>
 
         {/* 햄버거 버튼 — 모바일 */}
@@ -105,22 +180,61 @@ export function TopNav() {
               </Link>
             ))}
             <div className="flex flex-col gap-3 mt-8">
-              <Link
-                href="/auth/login"
-                className="text-center py-3 text-sm font-medium text-primary hover:underline"
-                onClick={() => setMobileOpen(false)}
-              >
-                로그인
-              </Link>
-              <Button
-                href="/membership"
-                variant="primary"
-                size="lg"
-                className="w-full"
-                onClick={() => setMobileOpen(false)}
-              >
-                무료 시작하기
-              </Button>
+              {user ? (
+                <>
+                  <Link
+                    href="/classroom"
+                    className="text-center py-3 text-sm font-semibold bg-primary text-white rounded-md hover:bg-primary/95 transition-colors"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    내 강의실
+                  </Link>
+                  <Link
+                    href="/mypage"
+                    className="text-center py-3 text-sm font-medium text-ink border border-hairline rounded-md hover:bg-surface-soft transition-colors"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    마이페이지
+                  </Link>
+                  <span className="flex items-center justify-center gap-2 py-2 text-sm font-medium text-ink">
+                    {user.avatarUrl && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={user.avatarUrl}
+                        alt=""
+                        referrerPolicy="no-referrer"
+                        className="w-7 h-7 rounded-full object-cover border border-hairline"
+                      />
+                    )}
+                    <span className="max-w-[180px] truncate">{user.name}님</span>
+                  </span>
+                  <button
+                    onClick={handleSignOut}
+                    className="text-center py-3 text-sm font-medium text-muted hover:text-ink transition-colors border border-hairline rounded-md bg-surface-soft"
+                  >
+                    로그아웃
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/auth/login"
+                    className="text-center py-3 text-sm font-medium text-primary hover:underline"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    로그인
+                  </Link>
+                  <Button
+                    href="/membership"
+                    variant="primary"
+                    size="lg"
+                    className="w-full"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    무료 시작하기
+                  </Button>
+                </>
+              )}
             </div>
           </nav>
         </div>

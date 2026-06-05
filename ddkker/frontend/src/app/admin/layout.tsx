@@ -27,7 +27,7 @@ export default async function AdminLayout({
               className="flex items-center gap-1.5 text-on-dark font-semibold text-sm"
             >
               <span className="text-primary font-mono">▌</span>
-              딸깍러
+              딸깍테크닉
             </Link>
             <span className="text-on-dark-soft text-sm">/ 관리자</span>
           </div>

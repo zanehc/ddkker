@@ -7,7 +7,7 @@ export const revalidate = 3600;
 
 export const metadata = {
   title: "멤버십",
-  description: "딸깍러 멤버십으로 프리미엄 강의와 모든 자료에 접근하세요.",
+  description: "딸깍테크닉 멤버십으로 프리미엄 강의와 모든 자료에 접근하세요.",
 };
 
 export default async function MembershipPage() {

@@ -32,15 +32,16 @@ const FOOTER_LINKS = [
     links: [
       { label: "소개", href: "/" },
       { label: "FAQ", href: "/faq" },
-      { label: "개인정보처리방침", href: "/privacy" },
       { label: "이용약관", href: "/terms" },
+      { label: "개인정보처리방침", href: "/privacy" },
+      { label: "환불정책", href: "/refund" },
     ],
   },
 ] as const;
 
 /**
  * Footer — surface-dark 배경, on-dark-soft 텍스트
- * DESIGN.md: 4열 링크 + 딸깍러 로고, 수직 패딩 64px
+ * DESIGN.md: 4열 링크 + 딸깍테크닉 로고, 수직 패딩 64px
  */
 export function Footer() {
   return (
@@ -53,7 +54,7 @@ export function Footer() {
             className="inline-flex items-center gap-1.5 text-on-dark font-semibold text-base"
           >
             <span className="text-primary font-mono text-lg leading-none">▌</span>
-            <span className="font-display tracking-tight">딸깍러</span>
+            <span className="font-display tracking-tight">딸깍테크닉</span>
           </Link>
           <p className="mt-2 text-sm text-on-dark-soft max-w-xs">
             AI와 대화만으로 SaaS를 만든다
@@ -83,18 +84,45 @@ export function Footer() {
           ))}
         </div>
 
-        {/* 카피라이트 */}
-        <div className="pt-6 border-t border-surface-dark-elevated flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <p className="text-xs text-on-dark-soft">
-            &copy; {new Date().getFullYear()} 딸깍러. All rights reserved.
-          </p>
-          <div className="flex gap-4 text-xs text-on-dark-soft">
-            <Link href="/privacy" className="hover:text-on-dark transition-colors">
-              개인정보처리방침
-            </Link>
-            <Link href="/terms" className="hover:text-on-dark transition-colors">
-              이용약관
-            </Link>
+        {/* 사업자 정보 */}
+        <div className="pt-8 border-t border-surface-dark-elevated">
+          <dl className="flex flex-wrap gap-x-6 gap-y-1.5 text-xs text-on-dark-soft mb-4">
+            <div className="flex gap-1.5">
+              <dt className="text-on-dark/60">상호</dt>
+              <dd>하나상사</dd>
+            </div>
+            <div className="flex gap-1.5">
+              <dt className="text-on-dark/60">대표</dt>
+              <dd>WANG YING</dd>
+            </div>
+            <div className="flex gap-1.5">
+              <dt className="text-on-dark/60">사업자등록번호</dt>
+              <dd>449-04-03516</dd>
+            </div>
+            <div className="flex gap-1.5">
+              <dt className="text-on-dark/60">이메일</dt>
+              <dd>
+                <a href="mailto:enen.zanehc@gmail.com" className="hover:text-on-dark transition-colors">
+                  enen.zanehc@gmail.com
+                </a>
+              </dd>
+            </div>
+            <div className="flex gap-1.5 w-full sm:w-auto">
+              <dt className="text-on-dark/60 shrink-0">주소</dt>
+              <dd>전라남도 나주시 금천면 천석길 35</dd>
+            </div>
+          </dl>
+
+          {/* 카피라이트 */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <p className="text-xs text-on-dark-soft">
+              &copy; {new Date().getFullYear()} 딸깍테크닉 / 하나상사. All rights reserved.
+            </p>
+            <div className="flex gap-4 text-xs text-on-dark-soft">
+              <Link href="/terms" className="hover:text-on-dark transition-colors">이용약관</Link>
+              <Link href="/privacy" className="hover:text-on-dark transition-colors">개인정보처리방침</Link>
+              <Link href="/refund" className="hover:text-on-dark transition-colors">환불정책</Link>
+            </div>
           </div>
         </div>
       </div>

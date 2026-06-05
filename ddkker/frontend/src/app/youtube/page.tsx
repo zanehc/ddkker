@@ -1,6 +1,6 @@
 export const metadata = {
   title: "YouTube",
-  description: "딸깍러 YouTube 채널에서 무료 강의 영상을 확인하세요.",
+  description: "딸깍테크닉 YouTube 채널에서 무료 강의 영상을 확인하세요.",
 };
 
 // 수동 등록 YouTube 영상 목록 (향후 YouTube Data API로 자동화)
@@ -55,7 +55,7 @@ export default function YouTubePage() {
           </div>
           <div className="flex-1">
             <h2 className="text-title-lg font-semibold text-on-dark mb-1">
-              딸깍러 채널
+              딸깍테크닉 채널
             </h2>
             <p className="text-on-dark-soft text-sm mb-4">
               바이브코딩으로 SaaS를 만드는 과정을 공유합니다.

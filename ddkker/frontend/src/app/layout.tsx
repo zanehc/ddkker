@@ -15,8 +15,8 @@ const hakgyoan = localFont({
 
 export const metadata: Metadata = {
   title: {
-    default: "딸깍러 — AI와 대화만으로 SaaS를 만든다",
-    template: "%s | 딸깍러",
+    default: "딸깍테크닉 — AI와 대화만으로 SaaS를 만든다",
+    template: "%s | 딸깍테크닉",
   },
   description:
     "코드 한 줄 없이 바이브코딩으로 24시간 자동화봇과 실전 SaaS를 구축하는 강의 플랫폼",
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
   ),
   openGraph: {
-    siteName: "딸깍러",
+    siteName: "딸깍테크닉",
     locale: "ko_KR",
     type: "website",
   },

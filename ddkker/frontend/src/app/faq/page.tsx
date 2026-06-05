@@ -6,7 +6,7 @@ export const revalidate = 3600;
 
 export const metadata = {
   title: "FAQ",
-  description: "딸깍러에 대해 자주 묻는 질문들을 모았습니다.",
+  description: "딸깍테크닉에 대해 자주 묻는 질문들을 모았습니다.",
 };
 
 type FaqCategory = "all" | "enrollment" | "membership" | "content" | "technical";
