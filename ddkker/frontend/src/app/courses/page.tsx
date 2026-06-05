@@ -19,6 +19,8 @@ const CATEGORY_LABELS: Record<CourseCategory | "all", string> = {
   "google-auth": "구글 인증",
   "claude-cli": "Claude CLI",
   "codex-cli": "Codex CLI",
+  "local-ai": "로컬AI",
+  "cli-orchestration": "CLI 오케스트레이션",
 };
 
 interface PageProps {

@@ -116,8 +116,8 @@ export default async function ResourcesPage({ searchParams }: PageProps) {
                       <p className="text-sm font-medium text-ink mb-3">
                         프리미엄 자료
                       </p>
-                      <Button href="/membership" variant="primary" size="md">
-                        멤버십 가입
+                      <Button href="/premium" variant="primary" size="md">
+                        프리미엄 보기
                       </Button>
                     </div>
                   )}

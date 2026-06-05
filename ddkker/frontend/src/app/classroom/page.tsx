@@ -84,10 +84,10 @@ export default async function ClassroomPage() {
             </div>
             {!isPremium && (
               <Link
-                href="/membership"
+                href="/premium"
                 className="py-1.5 px-3 bg-primary text-white text-xs font-semibold rounded-md hover:bg-primary-active transition-colors"
               >
-                업그레이드
+                프리미엄 보기
               </Link>
             )}
           </div>
@@ -104,7 +104,7 @@ export default async function ClassroomPage() {
               const hasAccess = course.tier === "free" || isPremium;
               const linkHref = hasAccess
                 ? `/courses/${course.slug}`
-                : `/membership?ref=classroom&course=${course.slug}`;
+                : `/premium?ref=classroom&course=${course.slug}`;
 
               return (
                 <div
@@ -186,7 +186,7 @@ export default async function ClassroomPage() {
                           : "bg-primary text-white hover:bg-primary-active"
                       }`}
                     >
-                      {hasAccess ? "강의 시청하기" : "멤버십 가입하고 시청하기"}
+                      {hasAccess ? "강의 시청하기" : "프리미엄에서 구매하기"}
                     </Link>
                   </div>
                 </div>

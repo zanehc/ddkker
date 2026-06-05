@@ -11,7 +11,7 @@ import type { User } from "@supabase/supabase-js";
 const NAV_LINKS = [
   { label: "소개", href: "/" },
   { label: "무료강의", href: "/courses" },
-  { label: "멤버십", href: "/membership" },
+  { label: "프리미엄", href: "/premium" },
   { label: "자료실", href: "/resources" },
   { label: "커뮤니티", href: "/community" },
   { label: "FAQ", href: "/faq" },
@@ -130,7 +130,7 @@ export function TopNav() {
               >
                 로그인
               </Link>
-              <Button href="/membership" variant="primary" size="md">
+              <Button href="/courses" variant="primary" size="md">
                 무료 시작하기
               </Button>
             </>
@@ -225,7 +225,7 @@ export function TopNav() {
                     로그인
                   </Link>
                   <Button
-                    href="/membership"
+                    href="/courses"
                     variant="primary"
                     size="lg"
                     className="w-full"

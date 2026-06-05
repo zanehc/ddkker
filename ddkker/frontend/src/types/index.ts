@@ -6,7 +6,9 @@ export type CourseCategory =
   | "saas-infra"
   | "google-auth"
   | "claude-cli"
-  | "codex-cli";
+  | "codex-cli"
+  | "local-ai"
+  | "cli-orchestration";
 
 export type Difficulty = "beginner" | "intermediate" | "advanced";
 
@@ -33,6 +35,8 @@ export interface Course {
   difficulty: Difficulty | null;
   thumbnail_url: string | null;
   tier: Tier;
+  price: number;
+  highlights: string[];
   sort_order: number;
   published: boolean;
   created_at: string;

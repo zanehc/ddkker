@@ -201,8 +201,8 @@ export default async function CourseDetailPage({ params }: PageProps) {
               <div className="space-y-3">
                 {course.tier === "premium" ? (
                   <>
-                    <Button href="/membership" variant="primary" size="lg" className="w-full">
-                      멤버십 가입하기
+                    <Button href="/premium" variant="primary" size="lg" className="w-full">
+                      프리미엄에서 구매하기
                     </Button>
                     <Button href="/courses" variant="secondary" size="md" className="w-full">
                       무료 강의 보기

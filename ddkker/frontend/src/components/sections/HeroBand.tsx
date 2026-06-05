@@ -25,8 +25,8 @@ export function HeroBand() {
               <Button href="/courses" variant="primary" size="lg">
                 무료 강의 시작하기
               </Button>
-              <Button href="/membership" variant="secondary" size="lg">
-                멤버십 보기
+              <Button href="/premium" variant="secondary" size="lg">
+                프리미엄 강의 보기
               </Button>
             </div>
           </div>

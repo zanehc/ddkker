@@ -126,11 +126,11 @@ export default async function HomePage() {
               무료 강의 보기
             </Button>
             <Button
-              href="/membership"
+              href="/premium"
               variant="secondary-dark"
               size="lg"
             >
-              멤버십 알아보기
+              프리미엄 강의 보기
             </Button>
           </div>
         </div>

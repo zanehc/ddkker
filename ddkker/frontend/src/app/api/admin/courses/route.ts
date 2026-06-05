@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
   await requireAdmin();
 
   const body = await req.json();
-  const { title, slug, description, category, difficulty, tier, sort_order } = body;
+  const { title, slug, description, category, difficulty, tier, price, highlights, sort_order } = body;
 
   if (!title?.trim() || !slug?.trim()) {
     return NextResponse.json({ error: "제목과 슬러그는 필수입니다" }, { status: 400 });
@@ -33,6 +33,8 @@ export async function POST(req: NextRequest) {
       category: category || null,
       difficulty: difficulty || null,
       tier: tier || "free",
+      price: Number.isFinite(price) ? price : 0,
+      highlights: Array.isArray(highlights) ? highlights : [],
       sort_order: sort_order ?? 0,
       published: false,
     })

@@ -11,11 +11,11 @@ const FOOTER_LINKS = [
     ],
   },
   {
-    heading: "멤버십",
+    heading: "프리미엄",
     links: [
-      { label: "멤버십 소개", href: "/membership" },
+      { label: "프리미엄 강의", href: "/premium" },
       { label: "자료실", href: "/resources" },
-      { label: "가격표", href: "/membership#pricing" },
+      { label: "가격 안내", href: "/premium" },
     ],
   },
   {

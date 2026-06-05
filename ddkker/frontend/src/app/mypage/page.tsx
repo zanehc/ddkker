@@ -164,10 +164,10 @@ export default async function MyPage() {
 
                 {!isPremium && (
                   <Link
-                    href="/membership"
+                    href="/premium"
                     className="inline-block py-2.5 px-4 bg-primary text-white text-center text-xs font-semibold rounded-md hover:bg-primary-active transition-colors shrink-0"
                   >
-                    프리미엄 구독하기
+                    프리미엄 강의 보기
                   </Link>
                 )}
               </div>
