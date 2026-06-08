@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { getCourseThumbnail } from "@/lib/course-thumbnails";
 
 export const dynamic = "force-dynamic";
 
@@ -34,6 +35,16 @@ export default async function ClassroomPage() {
     .maybeSingle();
 
   const isPremium = !!membership;
+
+  // 1-2. 강의별 구매(수강권) 조회 — 1회 구매 = 영구 수강
+  const { data: enrollmentRows } = await supabase
+    .from("enrollments")
+    .select("course_id")
+    .eq("user_id", user.id)
+    .eq("status", "active");
+  const enrolledIds = new Set(
+    (enrollmentRows ?? []).map((e) => e.course_id as number)
+  );
 
   // 2. 전체 강의 목록 조회 (published = true)
   const { data: courses } = await supabase
@@ -79,7 +90,7 @@ export default async function ClassroomPage() {
                   isPremium ? "text-primary" : "text-body-strong"
                 }`}
               >
-                {isPremium ? "프리미엄 멤버십" : "무료 회원"}
+                {isPremium ? "프리미엄회원" : "일반회원"}
               </span>
             </div>
             {!isPremium && (
@@ -101,7 +112,9 @@ export default async function ClassroomPage() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {typedCourses.map((course) => {
-              const hasAccess = course.tier === "free" || isPremium;
+              const hasAccess =
+                course.tier === "free" || isPremium || enrolledIds.has(course.id);
+              const thumbnailUrl = getCourseThumbnail(course);
               const linkHref = hasAccess
                 ? `/courses/${course.slug}`
                 : `/premium?ref=classroom&course=${course.slug}`;
@@ -113,10 +126,10 @@ export default async function ClassroomPage() {
                 >
                   {/* 썸네일 영역 */}
                   <div className="relative aspect-video w-full bg-surface-soft overflow-hidden border-b border-hairline">
-                    {course.thumbnail_url ? (
+                    {thumbnailUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
-                        src={course.thumbnail_url}
+                        src={thumbnailUrl}
                         alt={course.title}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />

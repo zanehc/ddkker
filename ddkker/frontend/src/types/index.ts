@@ -43,6 +43,31 @@ export interface Course {
   updated_at: string;
 }
 
+export type EnrollmentStatus = "active" | "refunded";
+export type PaymentStatus = "paid" | "failed" | "cancelled" | "refunded";
+
+export interface Enrollment {
+  id: number;
+  user_id: string;
+  course_id: number;
+  status: EnrollmentStatus;
+  source: "payment" | "manual";
+  payment_id: string | null;
+  granted_at: string;
+  note: string | null;
+}
+
+export interface Payment {
+  payment_id: string;
+  user_id: string;
+  course_id: number;
+  amount: number;
+  status: PaymentStatus;
+  raw: unknown | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Lesson {
   id: number;
   course_id: number;
@@ -63,6 +88,7 @@ export interface Resource {
   file_type: string | null;
   file_key: string | null;
   tier: Tier;
+  course_id: number | null;
   download_count: number;
   published: boolean;
   created_at: string;

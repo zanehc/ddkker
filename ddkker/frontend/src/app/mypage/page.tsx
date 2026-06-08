@@ -30,12 +30,8 @@ export default async function MyPage() {
     .maybeSingle();
 
   const isPremium = !!membership;
-  const membershipTierName =
-    membership?.tier === "annual"
-      ? "연간 프리미엄"
-      : membership?.tier === "premium"
-      ? "월간 프리미엄"
-      : "무료 회원";
+  // 등급은 블랭킷 단일 기준: 활성 프리미엄 멤버십 보유 → "프리미엄회원", 아니면 "일반회원"
+  const membershipTierName = isPremium ? "프리미엄회원" : "일반회원";
 
   const expiresDate = membership?.expires_at
     ? new Date(membership.expires_at).toLocaleDateString("ko-KR", {

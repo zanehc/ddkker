@@ -44,7 +44,7 @@ export default async function ResourcesPage({ searchParams }: PageProps) {
 
   let query = supabase
     .from("resources")
-    .select("id, title, description, category, file_type, file_size_bytes, download_count, tier, published, created_at")
+    .select("id, title, description, category, file_type, file_size_bytes, course_id, download_count, tier, published, created_at")
     .eq("published", true)
     .order("created_at", { ascending: false });
 

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import type { Course, Lesson } from "@/types";
 import type { Metadata } from "next";
+import { getCourseThumbnail } from "@/lib/course-thumbnails";
 
 interface PageProps {
   params: { slug: string };
@@ -40,6 +41,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
   if (!courseData) notFound();
 
   const course = courseData as Course;
+  const thumbnailUrl = getCourseThumbnail(course);
 
   // lessons 조회 (RLS가 tier 기반 필터링)
   const { data: lessonsData } = await supabase
@@ -102,10 +104,10 @@ export default async function CourseDetailPage({ params }: PageProps) {
             )}
 
             {/* 썸네일 */}
-            {course.thumbnail_url && (
+            {thumbnailUrl && (
               <div className="aspect-video rounded-xl overflow-hidden bg-surface-card mb-10 relative">
                 <Image
-                  src={course.thumbnail_url}
+                  src={thumbnailUrl}
                   alt={course.title}
                   fill
                   className="object-cover"

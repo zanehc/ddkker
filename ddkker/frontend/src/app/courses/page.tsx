@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/Badge";
 import Image from "next/image";
 import Link from "next/link";
 import type { Course, CourseCategory } from "@/types";
+import { getCourseThumbnail } from "@/lib/course-thumbnails";
 
 export const revalidate = 300;
 
@@ -37,6 +38,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
       "id, title, slug, description, category, difficulty, thumbnail_url, tier, sort_order, published"
     )
     .eq("published", true)
+    .neq("tier", "premium") // 프리미엄(유료) 강의는 /premium 에서만 노출
     .order("sort_order", { ascending: true });
 
   if (activeCategory !== "all") {
@@ -91,55 +93,59 @@ export default async function CoursesPage({ searchParams }: PageProps) {
           </div>
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {courses.map((course) => (
-              <Link
-                key={course.id}
-                href={`/courses/${course.slug}`}
-                className="group bg-canvas border border-hairline rounded-xl overflow-hidden hover:border-primary/30 hover:shadow-sm transition-all"
-              >
-                {/* 썸네일 */}
-                <div className="aspect-video bg-surface-card relative overflow-hidden">
-                  {course.thumbnail_url ? (
-                    <Image
-                      src={course.thumbnail_url}
-                      alt={course.title}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                  ) : (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-primary/20 font-mono text-6xl">▌</span>
-                    </div>
-                  )}
-                </div>
+            {courses.map((course) => {
+              const thumbnailUrl = getCourseThumbnail(course);
 
-                {/* 정보 */}
-                <div className="p-5">
-                  <div className="flex gap-2 mb-3">
-                    <Badge variant={course.tier === "free" ? "free" : "primary"}>
-                      {course.tier === "free" ? "무료" : "프리미엄"}
-                    </Badge>
-                    {course.difficulty && (
-                      <Badge variant={course.difficulty}>
-                        {course.difficulty === "beginner"
-                          ? "입문"
-                          : course.difficulty === "intermediate"
-                          ? "중급"
-                          : "고급"}
-                      </Badge>
+              return (
+                <Link
+                  key={course.id}
+                  href={`/courses/${course.slug}`}
+                  className="group bg-canvas border border-hairline rounded-xl overflow-hidden hover:border-primary/30 hover:shadow-sm transition-all"
+                >
+                  {/* 썸네일 */}
+                  <div className="aspect-video bg-surface-card relative overflow-hidden">
+                    {thumbnailUrl ? (
+                      <Image
+                        src={thumbnailUrl}
+                        alt={course.title}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="text-primary/20 font-mono text-6xl">▌</span>
+                      </div>
                     )}
                   </div>
-                  <h2 className="text-title-md font-semibold text-ink mb-2 line-clamp-2 group-hover:text-primary transition-colors">
-                    {course.title}
-                  </h2>
-                  {course.description && (
-                    <p className="text-muted text-sm line-clamp-2 leading-relaxed">
-                      {course.description}
-                    </p>
-                  )}
-                </div>
-              </Link>
-            ))}
+
+                  {/* 정보 */}
+                  <div className="p-5">
+                    <div className="flex gap-2 mb-3">
+                      <Badge variant={course.tier === "free" ? "free" : "primary"}>
+                        {course.tier === "free" ? "무료" : "프리미엄"}
+                      </Badge>
+                      {course.difficulty && (
+                        <Badge variant={course.difficulty}>
+                          {course.difficulty === "beginner"
+                            ? "입문"
+                            : course.difficulty === "intermediate"
+                            ? "중급"
+                            : "고급"}
+                        </Badge>
+                      )}
+                    </div>
+                    <h2 className="text-title-md font-semibold text-ink mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                      {course.title}
+                    </h2>
+                    {course.description && (
+                      <p className="text-muted text-sm line-clamp-2 leading-relaxed">
+                        {course.description}
+                      </p>
+                    )}
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         )}
       </div>

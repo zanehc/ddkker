@@ -3,7 +3,8 @@ import { PremiumCourses } from "@/components/sections/PremiumCourses";
 import { FaqAccordion } from "@/components/sections/FaqAccordion";
 import type { Faq, Course } from "@/types";
 
-export const revalidate = 300;
+// 상태별 CTA(미로그인/미구매/구매완료)를 위해 유저별 동적 렌더링
+export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "프리미엄",
@@ -26,6 +27,21 @@ export default async function PremiumPage() {
     .order("sort_order", { ascending: true });
 
   const courses: Course[] = (courseData ?? []) as Course[];
+
+  // 현재 유저 + 보유 수강권(active) 조회 → CTA 상태 결정
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  let enrolledCourseIds: number[] = [];
+  if (user) {
+    const { data: enr } = await supabase
+      .from("enrollments")
+      .select("course_id")
+      .eq("user_id", user.id)
+      .eq("status", "active");
+    enrolledCourseIds = (enr ?? []).map((e) => e.course_id as number);
+  }
 
   // 멤버십(=프리미엄) 관련 FAQ
   const { data: faqData } = await supabase
@@ -51,7 +67,11 @@ export default async function PremiumPage() {
       </section>
 
       {/* 프리미엄 강의 카탈로그 */}
-      <PremiumCourses courses={courses} />
+      <PremiumCourses
+        courses={courses}
+        userId={user?.id ?? null}
+        enrolledCourseIds={enrolledCourseIds}
+      />
 
       {/* 혜택 상세 */}
       <section className="bg-surface-soft py-20">

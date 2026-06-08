@@ -1,23 +1,25 @@
-import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
+import { PurchaseButton } from "@/components/premium/PurchaseButton";
 import type { Course } from "@/types";
 
 const won = (n: number) => `₩${n.toLocaleString("ko-KR")}`;
 
-// 결제(포트원) 연동 전까지 CTA는 커뮤니티 구매 문의로 연결한다.
-function inquiryHref(title: string) {
-  return (
-    "/community/new?board=qa&title=" +
-    encodeURIComponent(`[프리미엄] ${title} 구매 문의`)
-  );
-}
+type Props = {
+  courses: Course[];
+  /** 비로그인이면 null */
+  userId: string | null;
+  /** 보유 수강권(active) course_id 목록 */
+  enrolledCourseIds: number[];
+};
 
 /**
  * 프리미엄 강의 카탈로그.
  * courses 테이블(tier='premium', published)에서 받아 카드로 렌더한다.
  * sort_order가 가장 앞선 강의를 플래그십으로 강조한다.
+ * CTA는 PurchaseButton이 상태별(미로그인/미구매/구매완료)로 처리한다.
  */
-export function PremiumCourses({ courses }: { courses: Course[] }) {
+export function PremiumCourses({ courses, userId, enrolledCourseIds }: Props) {
+  const enrolled = new Set(enrolledCourseIds);
   if (courses.length === 0) {
     return (
       <section className="bg-canvas py-20">
@@ -80,14 +82,15 @@ export function PremiumCourses({ courses }: { courses: Course[] }) {
                 </div>
                 <div className="text-muted text-sm">1회 구매 · 영구 수강</div>
               </div>
-              <Button
-                href={inquiryHref(flagship.title)}
+              <PurchaseButton
+                courseId={flagship.id}
+                price={flagship.price}
+                orderName={flagship.title}
+                userId={userId}
+                enrolled={enrolled.has(flagship.id)}
                 variant="primary"
-                size="lg"
                 className="w-full"
-              >
-                구매 문의하기
-              </Button>
+              />
             </div>
           </div>
         </div>
@@ -124,21 +127,22 @@ export function PremiumCourses({ courses }: { courses: Course[] }) {
                   </span>
                   <span className="text-muted text-sm">1회 구매 · 영구 수강</span>
                 </div>
-                <Button
-                  href={inquiryHref(course.title)}
+                <PurchaseButton
+                  courseId={course.id}
+                  price={course.price}
+                  orderName={course.title}
+                  userId={userId}
+                  enrolled={enrolled.has(course.id)}
                   variant="secondary"
-                  size="lg"
                   className="w-full"
-                >
-                  구매 문의하기
-                </Button>
+                />
               </div>
             ))}
           </div>
         )}
 
         <p className="text-center text-muted text-sm mt-10">
-          베타 기간 중에는 구매 문의로 수강권을 부여합니다. 포트원 결제 연동은 준비 중입니다.
+          구매 즉시 영구 수강권이 부여됩니다. 결제는 포트원(PortOne)으로 안전하게 처리됩니다.
         </p>
       </div>
     </section>
