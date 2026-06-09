@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { BusinessInfo } from "@/components/legal/BusinessInfo";
 
 export const metadata: Metadata = {
   title: "이용약관 — 딸깍테크닉",
@@ -30,7 +31,8 @@ export default function TermsPage() {
               <li><strong>서비스</strong>: 회사가 운영하는 딸깍테크닉 웹사이트 및 관련 서비스 일체</li>
               <li><strong>이용자</strong>: 이 약관에 동의하고 서비스를 이용하는 자</li>
               <li><strong>회원</strong>: Google 계정으로 로그인하여 서비스를 이용하는 자</li>
-              <li><strong>멤버십</strong>: 프리미엄 콘텐츠 접근 권한을 부여하는 유료 서비스</li>
+              <li><strong>유료 강의</strong>: 회사가 개별 판매하는 온라인 강의 디지털 콘텐츠</li>
+              <li><strong>수강권</strong>: 유료 강의를 1회 구매하여 영구적으로 수강할 수 있는 권리</li>
               <li><strong>콘텐츠</strong>: 서비스 내 강의 영상, 자료, 텍스트 등 모든 저작물</li>
             </ul>
           </section>
@@ -60,19 +62,21 @@ export default function TermsPage() {
             <ol className="list-decimal pl-5 space-y-1">
               <li>서비스는 강의 콘텐츠, 자료 다운로드, 커뮤니티 기능을 제공합니다.</li>
               <li>무료 콘텐츠는 비회원도 이용할 수 있습니다.</li>
-              <li>프리미엄 콘텐츠는 유효한 멤버십을 보유한 회원만 이용할 수 있습니다.</li>
+              <li>프리미엄(유료) 강의는 해당 강의를 구매한 회원만 이용할 수 있습니다.</li>
               <li>서비스는 연중무휴 24시간 제공을 원칙으로 하나, 점검·장애 시 일시 중단될 수 있습니다.</li>
               <li>회사는 운영상 필요 시 콘텐츠 내용을 변경하거나 서비스를 중단할 수 있습니다.</li>
             </ol>
           </section>
 
           <section>
-            <h2 className="font-semibold text-ink text-base mb-3">제6조 (멤버십)</h2>
+            <h2 className="font-semibold text-ink text-base mb-3">제6조 (유료 강의 구매 및 결제)</h2>
             <ol className="list-decimal pl-5 space-y-1">
-              <li>멤버십은 유료로 제공되며, 이용 기간과 요금은 서비스 내 안내에 따릅니다.</li>
-              <li>멤버십은 타인에게 양도하거나 공유할 수 없습니다.</li>
-              <li>부정한 방법으로 멤버십을 이용한 경우 사전 통지 없이 멤버십이 취소될 수 있습니다.</li>
-              <li>환불에 관한 사항은{" "}
+              <li>유료 강의는 강의별로 개별 판매되며, 가격은 서비스 내 각 강의 페이지에 표시됩니다.</li>
+              <li>유료 강의는 온라인으로 제공되는 비실물 디지털 콘텐츠이며, 별도의 실물 배송은 없습니다.</li>
+              <li>1회 구매 시 해당 강의에 대한 영구 수강권이 부여되며, 구매한 수강권은 타인에게 양도·공유할 수 없습니다.</li>
+              <li>결제는 회사가 연동한 전자결제대행사(포트원)를 통해 안전하게 처리되며, 회사는 카드정보 등 결제수단 정보를 직접 보관하지 않습니다.</li>
+              <li>부정한 방법으로 강의를 이용한 경우 사전 통지 없이 수강권이 취소될 수 있습니다.</li>
+              <li>청약철회·환불에 관한 사항은{" "}
                 <Link href="/refund" className="text-primary hover:underline">환불정책</Link>
                 에 따릅니다.
               </li>
@@ -97,7 +101,7 @@ export default function TermsPage() {
             <ol className="list-decimal pl-5 space-y-1">
               <li>서비스가 제공하는 강의 영상, 자료, 텍스트 등의 저작권은 회사 또는 해당 창작자에게 있습니다.</li>
               <li>이용자는 콘텐츠를 개인 학습 목적으로만 이용할 수 있습니다.</li>
-              <li>멤버십 종료 후에는 프리미엄 콘텐츠에 대한 접근 권한이 소멸됩니다.</li>
+              <li>구매한 강의의 수강권은 영구적으로 유지되나, 환불(청약철회)이 완료된 강의의 수강권은 소멸됩니다.</li>
             </ol>
           </section>
 
@@ -129,18 +133,7 @@ export default function TermsPage() {
             </ol>
           </section>
 
-          <div className="bg-surface-soft rounded-lg px-5 py-4 text-sm space-y-1 mt-8">
-            <p><span className="font-medium text-ink">회사명:</span> 하나상사</p>
-            <p><span className="font-medium text-ink">대표자:</span> WANG YING</p>
-            <p><span className="font-medium text-ink">사업자등록번호:</span> 449-04-03516</p>
-            <p><span className="font-medium text-ink">소재지:</span> 전라남도 나주시 금천면 천석길 35</p>
-            <p>
-              <span className="font-medium text-ink">이메일:</span>{" "}
-              <a href="mailto:enen.zanehc@gmail.com" className="text-primary hover:underline">
-                enen.zanehc@gmail.com
-              </a>
-            </p>
-          </div>
+          <BusinessInfo className="mt-8" />
 
           <p className="text-sm text-muted">본 약관은 2026년 6월 5일부터 시행됩니다.</p>
 

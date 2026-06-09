@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { BusinessInfo } from "@/components/legal/BusinessInfo";
+import { BUSINESS } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "환불정책 — 딸깍테크닉",
-  description: "딸깍테크닉 멤버십 환불 및 청약철회 정책",
+  description: "딸깍테크닉 온라인 강의(디지털 콘텐츠) 환불 및 청약철회 정책",
 };
 
 export default function RefundPage() {
@@ -20,6 +22,20 @@ export default function RefundPage() {
             「콘텐츠산업진흥법」에 따라 아래와 같이 환불정책을 운영합니다.
           </p>
 
+          {/* 비실물 디지털 콘텐츠 안내 */}
+          <div className="bg-surface-soft border border-hairline rounded-xl px-6 py-5 text-sm space-y-1.5">
+            <p className="font-semibold text-ink">상품 및 배송 안내</p>
+            <p>
+              딸깍테크닉의 유료 상품은 온라인 강의 및 다운로드 자료로 제공되는
+              <strong> 비실물 디지털 콘텐츠</strong>이며, 별도의 실물 배송이 없습니다.
+            </p>
+            <p>
+              디지털 콘텐츠 특성상 <strong>실물 교환은 제공되지 않으며</strong>, 환불(청약철회)
+              기준은 아래와 같습니다. 결제 후 콘텐츠를 수강(열람)하거나 자료를 다운로드한 경우
+              청약철회가 제한될 수 있습니다.
+            </p>
+          </div>
+
           {/* 핵심 요약 */}
           <div className="bg-primary/5 border border-primary/20 rounded-xl px-6 py-5 space-y-2">
             <p className="font-semibold text-ink text-sm">환불정책 요약</p>
@@ -35,7 +51,7 @@ export default function RefundPage() {
             <h2 className="font-semibold text-ink text-base mb-3">제1조 (청약철회 기간)</h2>
             <ol className="list-decimal pl-5 space-y-2">
               <li>
-                이용자는 멤버십 결제일로부터 <strong>7일 이내</strong>에 청약철회(환불)를 요청할 수 있습니다.
+                이용자는 강의 결제일로부터 <strong>7일 이내</strong>에 청약철회(환불)를 요청할 수 있습니다.
                 (전자상거래법 제17조)
               </li>
               <li>
@@ -75,8 +91,8 @@ export default function RefundPage() {
                   <td className="border border-hairline px-3 py-2">결제금액 전액 환불</td>
                 </tr>
                 <tr>
-                  <td className="border border-hairline px-3 py-2">회사의 서비스 종료 시</td>
-                  <td className="border border-hairline px-3 py-2">잔여 기간 비례 환불</td>
+                  <td className="border border-hairline px-3 py-2">회사 사정으로 강의 제공이 불가해진 경우</td>
+                  <td className="border border-hairline px-3 py-2">미이용 강의 결제금액 전액 환불</td>
                 </tr>
               </tbody>
             </table>
@@ -89,9 +105,12 @@ export default function RefundPage() {
                 환불 요청은 이메일로 접수합니다.
                 <div className="mt-2 bg-surface-soft rounded-lg px-4 py-3 text-sm">
                   <p><span className="font-medium text-ink">이메일:</span>{" "}
-                    <a href="mailto:enen.zanehc@gmail.com" className="text-primary hover:underline">
-                      enen.zanehc@gmail.com
+                    <a href={`mailto:${BUSINESS.email}`} className="text-primary hover:underline">
+                      {BUSINESS.email}
                     </a>
+                  </p>
+                  <p className="mt-1"><span className="font-medium text-ink">전화:</span>{" "}
+                    <a href={`tel:${BUSINESS.tel}`} className="hover:underline">{BUSINESS.tel}</a>
                   </p>
                   <p className="mt-1 text-muted">
                     제목: [환불 요청] 가입 이메일 주소<br />
@@ -108,9 +127,9 @@ export default function RefundPage() {
             <h2 className="font-semibold text-ink text-base mb-3">제4조 (환불 불가 사유)</h2>
             <ul className="list-disc pl-5 space-y-1">
               <li>청약철회 기간(7일)이 경과한 경우</li>
-              <li>콘텐츠를 이미 다운로드하거나 수강한 경우 (해당 콘텐츠)</li>
-              <li>이용자의 귀책 사유로 멤버십이 정지된 경우</li>
-              <li>이벤트·프로모션으로 무상 제공된 멤버십</li>
+              <li>콘텐츠를 이미 다운로드하거나 수강한 경우 (해당 강의)</li>
+              <li>이용자의 귀책 사유로 수강권이 정지된 경우</li>
+              <li>이벤트·프로모션으로 무상 제공된 강의</li>
             </ul>
           </section>
 
@@ -126,16 +145,7 @@ export default function RefundPage() {
             </ul>
           </section>
 
-          <div className="bg-surface-soft rounded-lg px-5 py-4 text-sm space-y-1 mt-8">
-            <p><span className="font-medium text-ink">사업자:</span> 하나상사 (대표 WANG YING)</p>
-            <p><span className="font-medium text-ink">사업자등록번호:</span> 449-04-03516</p>
-            <p>
-              <span className="font-medium text-ink">환불 문의:</span>{" "}
-              <a href="mailto:enen.zanehc@gmail.com" className="text-primary hover:underline">
-                enen.zanehc@gmail.com
-              </a>
-            </p>
-          </div>
+          <BusinessInfo className="mt-8" />
 
           <p className="text-sm text-muted">
             본 환불정책은 2026년 6월 5일부터 시행됩니다.{" "}

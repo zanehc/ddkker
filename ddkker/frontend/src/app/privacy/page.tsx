@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { BusinessInfo } from "@/components/legal/BusinessInfo";
+import { BUSINESS } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "개인정보처리방침 — 딸깍테크닉",
@@ -42,6 +44,11 @@ export default function PrivacyPage() {
                   <td className="border border-hairline px-3 py-2">IP 주소(해시 처리), 접속 일시, 서비스 이용 기록</td>
                   <td className="border border-hairline px-3 py-2">자동 수집</td>
                 </tr>
+                <tr>
+                  <td className="border border-hairline px-3 py-2">유료 강의 결제</td>
+                  <td className="border border-hairline px-3 py-2">결제 식별번호, 결제 금액, 결제 일시, 결제 상태</td>
+                  <td className="border border-hairline px-3 py-2">결제 시 수집 (카드정보 등 결제수단 정보는 결제대행사가 처리하며 회사는 보관하지 않음)</td>
+                </tr>
               </tbody>
             </table>
           </section>
@@ -50,7 +57,7 @@ export default function PrivacyPage() {
             <h2 className="font-semibold text-ink text-base mb-3">제2조 (개인정보 이용 목적)</h2>
             <ul className="list-disc pl-5 space-y-1">
               <li>회원 식별 및 서비스 제공</li>
-              <li>멤버십 권한 관리</li>
+              <li>유료 강의 결제 및 수강권 관리</li>
               <li>강의 자료 다운로드 서비스 제공</li>
               <li>커뮤니티 서비스 운영</li>
               <li>서비스 부정 이용 방지 및 보안</li>
@@ -101,6 +108,11 @@ export default function PrivacyPage() {
                   <td className="border border-hairline px-3 py-2">파일 스토리지(R2)</td>
                   <td className="border border-hairline px-3 py-2">파일 삭제 시</td>
                 </tr>
+                <tr>
+                  <td className="border border-hairline px-3 py-2">㈜포트원 (PortOne)</td>
+                  <td className="border border-hairline px-3 py-2">전자결제 대행 및 결제 검증</td>
+                  <td className="border border-hairline px-3 py-2">관련 법령상 보존기간</td>
+                </tr>
               </tbody>
             </table>
           </section>
@@ -127,18 +139,10 @@ export default function PrivacyPage() {
 
           <section>
             <h2 className="font-semibold text-ink text-base mb-3">제7조 (개인정보 보호 책임자)</h2>
-            <div className="bg-surface-soft rounded-lg px-5 py-4 text-sm space-y-1">
-              <p><span className="font-medium text-ink">회사명:</span> 하나상사</p>
-              <p><span className="font-medium text-ink">대표자:</span> WANG YING</p>
-              <p><span className="font-medium text-ink">사업자등록번호:</span> 449-04-03516</p>
-              <p><span className="font-medium text-ink">소재지:</span> 전라남도 나주시 금천면 천석길 35</p>
-              <p>
-                <span className="font-medium text-ink">이메일:</span>{" "}
-                <a href="mailto:enen.zanehc@gmail.com" className="text-primary hover:underline">
-                  enen.zanehc@gmail.com
-                </a>
-              </p>
-            </div>
+            <p className="mb-3 text-sm">
+              개인정보 보호책임자: <span className="font-medium text-ink">{BUSINESS.privacyOfficer}</span> (대표 겸임)
+            </p>
+            <BusinessInfo title={null} />
             <p className="mt-3 text-sm">
               개인정보 관련 불만·문의는 위 이메일로 접수하시면 3영업일 이내 답변 드립니다.
               개인정보침해 신고는 개인정보보호위원회(privacy.go.kr, 국번없이 182)에 하실 수 있습니다.

@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { PremiumCourses } from "@/components/sections/PremiumCourses";
 import { FaqAccordion } from "@/components/sections/FaqAccordion";
+import { BusinessInfo } from "@/components/legal/BusinessInfo";
 import type { Faq, Course } from "@/types";
 
 // 상태별 CTA(미로그인/미구매/구매완료)를 위해 유저별 동적 렌더링
@@ -130,6 +131,13 @@ export default async function PremiumPage() {
           </div>
         </section>
       )}
+
+      {/* 결제 진행 페이지 내 사업자 정보 (전자상거래법 표시의무) */}
+      <section className="bg-surface-soft py-12 border-t border-hairline">
+        <div className="max-w-[800px] mx-auto px-6">
+          <BusinessInfo />
+        </div>
+      </section>
     </main>
   );
 }

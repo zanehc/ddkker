@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { GoogleLoginButton } from "@/components/auth/GoogleLoginButton";
+import { BusinessInfo } from "@/components/legal/BusinessInfo";
 
 export const metadata = { title: "로그인 — 딸깍테크닉" };
 
@@ -12,7 +13,7 @@ export default function LoginPage({
   const kakaoHref = `/api/auth/kakao?next=${encodeURIComponent(next)}`;
 
   return (
-    <main className="min-h-[calc(100vh-64px)] flex items-center justify-center px-4 bg-canvas">
+    <main className="min-h-[calc(100vh-64px)] flex items-center justify-center px-4 py-12 bg-canvas">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-1.5 mb-6">
@@ -21,6 +22,10 @@ export default function LoginPage({
           </Link>
           <h1 className="text-2xl font-serif font-normal text-ink mb-2">로그인</h1>
           <p className="text-sm text-muted">소셜 계정으로 간편하게 시작하세요</p>
+          <p className="text-xs text-muted-soft mt-3 leading-relaxed">
+            딸깍테크닉은 AI 도구·바이브코딩으로 SaaS·자동화·개발환경 구축을
+            배우는 온라인 강의 플랫폼입니다.
+          </p>
         </div>
 
         <div className="flex flex-col gap-3">
@@ -56,6 +61,8 @@ export default function LoginPage({
           <Link href="/privacy" className="underline hover:text-ink">개인정보처리방침</Link>
           에 동의하는 것으로 간주됩니다.
         </p>
+
+        <BusinessInfo className="mt-8" />
       </div>
     </main>
   );

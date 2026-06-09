@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BUSINESS } from "@/lib/site";
 
 const FOOTER_LINKS = [
   {
@@ -89,27 +90,39 @@ export function Footer() {
           <dl className="flex flex-wrap gap-x-6 gap-y-1.5 text-xs text-on-dark-soft mb-4">
             <div className="flex gap-1.5">
               <dt className="text-on-dark/60">상호</dt>
-              <dd>하나상사</dd>
+              <dd>{BUSINESS.name}</dd>
             </div>
             <div className="flex gap-1.5">
               <dt className="text-on-dark/60">대표</dt>
-              <dd>WANG YING</dd>
+              <dd>{BUSINESS.ceo}</dd>
             </div>
             <div className="flex gap-1.5">
               <dt className="text-on-dark/60">사업자등록번호</dt>
-              <dd>449-04-03516</dd>
+              <dd>{BUSINESS.bizRegNo}</dd>
+            </div>
+            <div className="flex gap-1.5">
+              <dt className="text-on-dark/60">통신판매업신고</dt>
+              <dd>{BUSINESS.mailOrderNo}</dd>
+            </div>
+            <div className="flex gap-1.5">
+              <dt className="text-on-dark/60">전화</dt>
+              <dd>
+                <a href={`tel:${BUSINESS.tel}`} className="hover:text-on-dark transition-colors">
+                  {BUSINESS.tel}
+                </a>
+              </dd>
             </div>
             <div className="flex gap-1.5">
               <dt className="text-on-dark/60">이메일</dt>
               <dd>
-                <a href="mailto:enen.zanehc@gmail.com" className="hover:text-on-dark transition-colors">
-                  enen.zanehc@gmail.com
+                <a href={`mailto:${BUSINESS.email}`} className="hover:text-on-dark transition-colors">
+                  {BUSINESS.email}
                 </a>
               </dd>
             </div>
             <div className="flex gap-1.5 w-full sm:w-auto">
               <dt className="text-on-dark/60 shrink-0">주소</dt>
-              <dd>전라남도 나주시 금천면 천석길 35</dd>
+              <dd>{BUSINESS.address}</dd>
             </div>
           </dl>
 

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Badge } from "@/components/ui/Badge";
 import { PurchaseButton } from "@/components/premium/PurchaseButton";
 import type { Course } from "@/types";
@@ -141,9 +142,21 @@ export function PremiumCourses({ courses, userId, enrolledCourseIds }: Props) {
           </div>
         )}
 
-        <p className="text-center text-muted text-sm mt-10">
-          구매 즉시 영구 수강권이 부여됩니다. 결제는 포트원(PortOne)으로 안전하게 처리됩니다.
-        </p>
+        {/* 결제 전 고지 (전자상거래법) */}
+        <div className="mt-10 max-w-[720px] mx-auto rounded-xl border border-hairline bg-surface-soft px-6 py-5 text-sm text-muted leading-relaxed">
+          <ul className="space-y-1.5">
+            <li>· 본 상품은 온라인 강의 <strong className="text-body">디지털 콘텐츠</strong>입니다. 실물 배송이 없습니다.</li>
+            <li>· 결제 완료 즉시 <strong className="text-body">내 강의실</strong>에서 영구 수강권이 부여됩니다.</li>
+            <li>· 결제는 <strong className="text-body">포트원(PortOne)</strong>으로 안전하게 처리되며, 회사는 카드정보를 보관하지 않습니다.</li>
+            <li>
+              · 구매 전{" "}
+              <Link href="/terms" className="text-primary hover:underline">이용약관</Link>
+              {" "}·{" "}
+              <Link href="/refund" className="text-primary hover:underline">환불정책</Link>
+              을 확인해 주세요. 환불은 환불정책을 따릅니다.
+            </li>
+          </ul>
+        </div>
       </div>
     </section>
   );
