@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { EmailPasswordLoginForm } from "@/components/auth/EmailPasswordLoginForm";
 import { GoogleLoginButton } from "@/components/auth/GoogleLoginButton";
 import { BusinessInfo } from "@/components/legal/BusinessInfo";
 
@@ -29,6 +30,14 @@ export default function LoginPage({
         </div>
 
         <div className="flex flex-col gap-3">
+          <EmailPasswordLoginForm next={next} />
+
+          <div className="flex items-center gap-3 my-1">
+            <div className="flex-1 h-px bg-hairline" />
+            <span className="text-xs text-muted">또는</span>
+            <div className="flex-1 h-px bg-hairline" />
+          </div>
+
           {/* Google */}
           <GoogleLoginButton next={next} />
 
