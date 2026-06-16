@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
+import { createClient } from "@/lib/supabase/client";
 
 const won = (n: number) => `₩${n.toLocaleString("ko-KR")}`;
 
@@ -105,6 +106,23 @@ export function PurchaseButton({
 
     setLoading(true);
     try {
+      // 이니시스 V2 일반결제 등은 구매자 이메일이 필수다. 세션에서 직접 확보(호출부 의존 X).
+      const supabase = createClient();
+      const {
+        data: { user: authUser },
+      } = await supabase.auth.getUser();
+      const email = authUser?.email ?? undefined;
+      const fullName =
+        (authUser?.user_metadata?.full_name as string | undefined) ??
+        (authUser?.user_metadata?.name as string | undefined) ??
+        undefined;
+
+      if (!email) {
+        setError("결제를 위해 이메일 정보가 필요합니다. 다시 로그인 후 시도해 주세요.");
+        setLoading(false);
+        return;
+      }
+
       const PortOne = await import("@portone/browser-sdk/v2");
       const paymentId = `pay_${crypto.randomUUID()}`;
 
@@ -116,6 +134,7 @@ export function PurchaseButton({
         totalAmount: price,
         currency: "CURRENCY_KRW",
         payMethod: method.payMethod,
+        customer: { email, fullName },
         customData: { userId, courseId },
       });
 
