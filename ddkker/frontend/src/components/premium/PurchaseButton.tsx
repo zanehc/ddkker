@@ -87,7 +87,8 @@ export function PurchaseButton({
         orderName,
         totalAmount: price,
         currency: "CURRENCY_KRW",
-        payMethod: "CARD",
+        // 연결된 포트원 채널이 간편결제(EASY_PAY) 채널이므로 EASY_PAY 사용
+        payMethod: "EASY_PAY",
         customData: { userId, courseId },
       });
 
