@@ -20,13 +20,39 @@ type Props = {
   className?: string;
 };
 
+type PayMethodOption = {
+  key: string;
+  label: string;
+  channelKey: string;
+  payMethod: "CARD" | "EASY_PAY";
+};
+
+/**
+ * 결제수단 목록을 환경변수(채널 키)로부터 구성한다.
+ *   - NEXT_PUBLIC_PORTONE_CHANNEL_KEY_CARD     → 신용카드(예: KG이니시스)
+ *   - NEXT_PUBLIC_PORTONE_CHANNEL_KEY_EASYPAY  → 카카오페이 등 간편결제
+ *   - NEXT_PUBLIC_PORTONE_CHANNEL_KEY          → (구버전 호환) 간편결제로 취급
+ * 설정된 채널이 2개면 사용자가 선택, 1개면 그대로 사용한다.
+ */
+function getPayMethods(): PayMethodOption[] {
+  const cardCh = process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY_CARD;
+  const easyCh =
+    process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY_EASYPAY ||
+    process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY;
+
+  const methods: PayMethodOption[] = [];
+  if (cardCh)
+    methods.push({ key: "card", label: "신용카드", channelKey: cardCh, payMethod: "CARD" });
+  if (easyCh)
+    methods.push({ key: "easypay", label: "카카오페이", channelKey: easyCh, payMethod: "EASY_PAY" });
+  return methods;
+}
+
 /**
  * 프리미엄 강의 구매 버튼 (상태별 CTA).
  *   - 구매완료(enrolled)   → "수강하기"
  *   - 비로그인(userId 없음) → "로그인 후 구매"
- *   - 로그인·미구매         → "구매하기 ₩{price}" → 포트원 결제 실행
- *
- * 포트원 키(NEXT_PUBLIC_PORTONE_*) 미설정 시 클릭하면 안내만 표시(스캐폴딩).
+ *   - 로그인·미구매         → 결제수단 선택 + "구매하기 ₩{price}" → 포트원 결제 실행
  */
 export function PurchaseButton({
   courseId,
@@ -39,6 +65,8 @@ export function PurchaseButton({
   className,
 }: Props) {
   const router = useRouter();
+  const methods = getPayMethods();
+  const [methodKey, setMethodKey] = useState(methods[0]?.key ?? "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -69,8 +97,8 @@ export function PurchaseButton({
     setError(null);
 
     const storeId = process.env.NEXT_PUBLIC_PORTONE_STORE_ID;
-    const channelKey = process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY;
-    if (!storeId || !channelKey) {
+    const method = methods.find((m) => m.key === methodKey) ?? methods[0];
+    if (!storeId || !method) {
       setError("결제 모듈이 아직 설정되지 않았습니다. 관리자에게 문의해 주세요.");
       return;
     }
@@ -82,13 +110,12 @@ export function PurchaseButton({
 
       const response = await PortOne.requestPayment({
         storeId,
-        channelKey,
+        channelKey: method.channelKey,
         paymentId,
         orderName,
         totalAmount: price,
         currency: "CURRENCY_KRW",
-        // 연결된 포트원 채널이 간편결제(EASY_PAY) 채널이므로 EASY_PAY 사용
-        payMethod: "EASY_PAY",
+        payMethod: method.payMethod,
         customData: { userId, courseId },
       });
 
@@ -123,6 +150,26 @@ export function PurchaseButton({
 
   return (
     <div className={className}>
+      {/* 결제수단 선택 (2개 이상일 때만 노출) */}
+      {methods.length > 1 && (
+        <div className="flex gap-2 mb-3">
+          {methods.map((m) => (
+            <button
+              key={m.key}
+              type="button"
+              onClick={() => setMethodKey(m.key)}
+              className={`flex-1 h-10 rounded-md border text-sm font-medium transition-colors ${
+                methodKey === m.key
+                  ? "border-primary bg-primary/5 text-primary"
+                  : "border-hairline bg-canvas text-muted hover:border-primary/40"
+              }`}
+            >
+              {m.label}
+            </button>
+          ))}
+        </div>
+      )}
+
       <Button
         onClick={handlePurchase}
         variant={variant}
