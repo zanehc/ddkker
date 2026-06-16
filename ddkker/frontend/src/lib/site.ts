@@ -10,8 +10,7 @@ export const BUSINESS = {
   bizRegNo: "449-04-03516",
   mailOrderNo: "제2025-전남나주-0174호", // 통신판매업 신고번호
   address: "전라남도 나주시 금천면 천석길 35",
-  // TODO: 070 인터넷전화 개통 후 실제 번호로 교체 (휴대폰 불가 — 유선/인터넷전화만)
-  tel: "070-0000-0000",
+  tel: "070-8095-7438",
   email: "enen.zanehc@gmail.com",
   privacyOfficer: "WANG YING", // 개인정보 보호책임자 (대표자 겸임)
 } as const;
