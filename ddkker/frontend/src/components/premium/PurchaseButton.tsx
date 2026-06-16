@@ -70,6 +70,7 @@ export function PurchaseButton({
   const [methodKey, setMethodKey] = useState(methods[0]?.key ?? "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [phone, setPhone] = useState("");
 
   // 구매완료
   if (enrolled) {
@@ -96,6 +97,13 @@ export function PurchaseButton({
 
   async function handlePurchase() {
     setError(null);
+
+    // 이니시스 V2 일반결제는 구매자 휴대폰 번호가 필수다. (구글 로그인엔 없으므로 입력받음)
+    const phoneNumber = phone.replace(/[^0-9]/g, "");
+    if (phoneNumber.length < 10 || phoneNumber.length > 11) {
+      setError("휴대폰 번호를 정확히 입력해 주세요. (숫자만, 예: 01012345678)");
+      return;
+    }
 
     const storeId = process.env.NEXT_PUBLIC_PORTONE_STORE_ID;
     const method = methods.find((m) => m.key === methodKey) ?? methods[0];
@@ -134,7 +142,7 @@ export function PurchaseButton({
         totalAmount: price,
         currency: "CURRENCY_KRW",
         payMethod: method.payMethod,
-        customer: { email, fullName },
+        customer: { email, fullName, phoneNumber },
         customData: { userId, courseId },
       });
 
@@ -188,6 +196,21 @@ export function PurchaseButton({
           ))}
         </div>
       )}
+
+      {/* 구매자 휴대폰 번호 (이니시스 V2 일반결제 필수) */}
+      <div className="mb-3">
+        <input
+          type="tel"
+          inputMode="numeric"
+          autoComplete="tel"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          placeholder="휴대폰 번호 (예: 01012345678)"
+          aria-label="휴대폰 번호"
+          className="w-full h-10 px-3 rounded-md border border-hairline bg-canvas text-sm text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary/20"
+        />
+        <p className="mt-1 text-[11px] text-muted">결제 영수증·본인확인에 사용됩니다.</p>
+      </div>
 
       <Button
         onClick={handlePurchase}
