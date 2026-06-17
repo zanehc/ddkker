@@ -19,27 +19,27 @@ export default async function MyPage() {
     .eq("id", user.id)
     .single();
 
-  // 멤버십 정보 조회 (status가 active인 것 중 가장 만료일이 늦은 것 혹은 단일)
-  const { data: membership } = await supabase
-    .from("memberships")
-    .select("*")
+  // 구매한 강의(수강권) 조회 — enrollments(active) + 강의 정보
+  const { data: enrollmentRows } = await supabase
+    .from("enrollments")
+    .select("granted_at, course:courses(id, title, slug, price, thumbnail_url)")
     .eq("user_id", user.id)
     .eq("status", "active")
-    .order("expires_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+    .order("granted_at", { ascending: false });
 
-  const isPremium = !!membership;
-  // 등급은 블랭킷 단일 기준: 활성 프리미엄 멤버십 보유 → "프리미엄회원", 아니면 "일반회원"
-  const membershipTierName = isPremium ? "프리미엄회원" : "일반회원";
-
-  const expiresDate = membership?.expires_at
-    ? new Date(membership.expires_at).toLocaleDateString("ko-KR", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })
-    : "무제한";
+  type Purchased = {
+    id: number;
+    title: string;
+    slug: string;
+    price: number;
+    thumbnail_url: string | null;
+    granted_at: string;
+  };
+  const purchased: Purchased[] = (enrollmentRows ?? [])
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    .map((e: any) => (e.course ? { ...e.course, granted_at: e.granted_at } : null))
+    .filter(Boolean) as Purchased[];
+  const hasPurchases = purchased.length > 0;
 
   return (
     <main className="min-h-screen bg-canvas py-12 md:py-20">
@@ -48,7 +48,7 @@ export default async function MyPage() {
         <div className="mb-10 text-center md:text-left">
           <h1 className="text-display-sm font-serif text-ink mb-2">마이페이지</h1>
           <p className="text-muted text-sm font-sans">
-            계정 관리 및 소셜 계정 연동, 멤버십 정보를 확인하세요.
+            계정 정보와 구매한 강의를 확인하세요.
           </p>
         </div>
 
@@ -127,55 +127,60 @@ export default async function MyPage() {
 
           {/* 오른쪽: 상세 정보 카드들 */}
           <div className="md:col-span-2 flex flex-col gap-6">
-            {/* 멤버십 카드 */}
+            {/* 구매한 강의 카드 */}
             <div className="bg-surface-card border border-hairline rounded-lg p-6 shadow-sm">
-              <h3 className="text-title-md font-bold text-ink mb-4 pb-2 border-b border-hairline">
-                멤버십 상세 정보
-              </h3>
-              <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
-                <div>
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <span className="text-body font-sans text-sm">현재 등급:</span>
-                    <span
-                      className={`px-2.5 py-0.5 text-xs font-semibold rounded-full ${
-                        isPremium
-                          ? "bg-primary text-white"
-                          : "bg-surface-cream-strong text-muted"
-                      }`}
-                    >
-                      {membershipTierName}
-                    </span>
-                  </div>
-                  {isPremium ? (
-                    <p className="text-xs text-muted">
-                      멤버십 혜택을 이용 중입니다. 만료일:{" "}
-                      <span className="font-semibold text-ink">{expiresDate}</span>
-                    </p>
-                  ) : (
-                    <p className="text-xs text-muted">
-                      현재 무료 멤버십을 이용하고 계십니다. 프리미엄 강의 시청이 불가능합니다.
-                    </p>
-                  )}
-                </div>
-
-                {!isPremium && (
-                  <Link
-                    href="/premium"
-                    className="inline-block py-2.5 px-4 bg-primary text-white text-center text-xs font-semibold rounded-md hover:bg-primary-active transition-colors shrink-0"
-                  >
-                    프리미엄 강의 보기
-                  </Link>
-                )}
+              <div className="flex items-center justify-between mb-4 pb-2 border-b border-hairline">
+                <h3 className="text-title-md font-bold text-ink">내 프리미엄 강의</h3>
+                <span className="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-primary/10 text-primary">
+                  {purchased.length}개 보유
+                </span>
               </div>
 
-              {isPremium && (
-                <div className="mt-6 p-4 bg-surface-soft border border-hairline rounded-md text-xs text-muted-soft">
-                  <p className="font-semibold text-muted mb-1">프리미엄 혜택 리스트:</p>
-                  <ul className="list-disc pl-4 space-y-1">
-                    <li>플랫폼 내 모든 프리미엄 강의 및 노하우 영상 시청 가능</li>
-                    <li>고급 SaaS 템플릿 및 자료실 다운로드 무제한 제공</li>
-                    <li>커뮤니티 내 프리미엄 전용 질문 게시판 이용 권한</li>
-                  </ul>
+              {hasPurchases ? (
+                <ul className="flex flex-col divide-y divide-hairline">
+                  {purchased.map((c) => (
+                    <li key={c.id} className="flex items-center gap-4 py-3">
+                      <div className="w-16 h-10 rounded bg-surface-soft overflow-hidden shrink-0 border border-hairline flex items-center justify-center">
+                        {c.thumbnail_url ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={c.thumbnail_url}
+                            alt=""
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <span className="text-primary/30 font-mono">▌</span>
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-ink truncate">
+                          {c.title}
+                        </p>
+                        <p className="text-xs text-muted">
+                          {new Date(c.granted_at).toLocaleDateString("ko-KR")} 구매
+                          · 영구 수강
+                        </p>
+                      </div>
+                      <Link
+                        href={`/courses/${c.slug}`}
+                        className="shrink-0 py-2 px-3 bg-primary text-white text-xs font-semibold rounded-md hover:bg-primary-active transition-colors"
+                      >
+                        수강하기
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-muted text-sm mb-4">
+                    아직 구매한 프리미엄 강의가 없습니다.
+                  </p>
+                  <Link
+                    href="/premium"
+                    className="inline-block py-2.5 px-4 bg-primary text-white text-xs font-semibold rounded-md hover:bg-primary-active transition-colors"
+                  >
+                    프리미엄 강의 보러가기
+                  </Link>
                 </div>
               )}
             </div>
