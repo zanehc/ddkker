@@ -1,9 +1,11 @@
 import { createClient } from "@/lib/supabase/server";
+import { adminClient } from "@/lib/server/admin-client";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
-import type { Course, Lesson } from "@/types";
+import type { Course } from "@/types";
 import type { Metadata } from "next";
 import { getCourseThumbnail } from "@/lib/course-thumbnails";
 
@@ -43,17 +45,60 @@ export default async function CourseDetailPage({ params }: PageProps) {
   const course = courseData as Course;
   const thumbnailUrl = getCourseThumbnail(course);
 
-  // lessons 조회 (RLS가 tier 기반 필터링)
-  const { data: lessonsData } = await supabase
+  // 현재 사용자 + 수강권/관리자 여부 (수업 클릭 가능 판정)
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  let enrolled = false;
+  let isAdmin = false;
+  if (user) {
+    const [{ data: enr }, { data: adm }] = await Promise.all([
+      adminClient
+        .from("enrollments")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("course_id", course.id)
+        .eq("status", "active")
+        .maybeSingle(),
+      adminClient
+        .from("admin_users")
+        .select("user_id")
+        .eq("user_id", user.id)
+        .maybeSingle(),
+    ]);
+    enrolled = !!enr;
+    isAdmin = !!adm;
+  }
+
+  // 커리큘럼은 예비 구매자에게도 공개해야 하므로 서버에서 안전 컬럼만 조회(adminClient).
+  // video_url은 클라이언트로 보내지 않고 "활성 여부(active)"로만 변환한다.
+  const { data: lessonRows } = await adminClient
     .from("lessons")
-    .select("id, title, sort_order, duration_min, tier, published")
+    .select("id, title, sort_order, duration_min, tier, video_url")
     .eq("course_id", course.id)
     .eq("published", true)
     .order("sort_order", { ascending: true });
 
-  const lessons: Omit<Lesson, "video_url" | "body" | "course_id">[] = (
-    lessonsData ?? []
-  ) as Omit<Lesson, "video_url" | "body" | "course_id">[];
+  type LessonRow = {
+    id: number;
+    title: string;
+    duration_min: number | null;
+    tier: "free" | "premium";
+    active: boolean; // 영상이 연결되어 시청 가능
+  };
+  const lessons: LessonRow[] = (lessonRows ?? []).map(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (l: any) => ({
+      id: l.id,
+      title: l.title,
+      duration_min: l.duration_min,
+      tier: l.tier,
+      active: !!l.video_url,
+    })
+  );
+
+  // 강의 단위 접근권(무료강의/구매자/관리자)
+  const courseUnlocked = course.tier === "free" || enrolled || isAdmin;
 
   const totalDuration = lessons.reduce(
     (sum, l) => sum + (l.duration_min ?? 0),
@@ -131,33 +176,62 @@ export default async function CourseDetailPage({ params }: PageProps) {
                 </p>
               ) : (
                 <div className="divide-y divide-hairline border border-hairline rounded-xl overflow-hidden">
-                  {lessons.map((lesson, index) => (
-                    <div
-                      key={lesson.id}
-                      className="flex items-center gap-4 px-5 py-4 bg-canvas hover:bg-surface-soft transition-colors"
-                    >
-                      <span className="text-sm text-muted w-6 flex-shrink-0 text-center">
-                        {index + 1}
-                      </span>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-ink truncate">
-                          {lesson.title}
-                        </p>
+                  {lessons.map((lesson, index) => {
+                    const lessonUnlocked = lesson.tier === "free" || courseUnlocked;
+                    const watchable = lesson.active && lessonUnlocked;
+                    const rowInner = (
+                      <>
+                        <span className="text-sm text-muted w-6 flex-shrink-0 text-center">
+                          {index + 1}
+                        </span>
+                        <div className="flex-1 min-w-0">
+                          <p
+                            className={`text-sm font-medium truncate ${
+                              watchable ? "text-ink" : "text-muted"
+                            }`}
+                          >
+                            {lesson.title}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-3 flex-shrink-0">
+                          {lesson.duration_min && (
+                            <span className="text-xs text-muted">
+                              {lesson.duration_min}분
+                            </span>
+                          )}
+                          {!lesson.active ? (
+                            <span className="text-xs font-medium text-muted bg-surface-card px-2 py-0.5 rounded-pill">
+                              준비중
+                            </span>
+                          ) : !lessonUnlocked ? (
+                            <span className="text-xs font-medium text-primary">
+                              🔒 구매 필요
+                            </span>
+                          ) : (
+                            <span className="text-xs font-semibold text-primary">
+                              ▶ 시청
+                            </span>
+                          )}
+                        </div>
+                      </>
+                    );
+                    return watchable ? (
+                      <Link
+                        key={lesson.id}
+                        href={`/courses/${course.slug}/lessons/${lesson.id}`}
+                        className="flex items-center gap-4 px-5 py-4 bg-canvas hover:bg-surface-soft transition-colors"
+                      >
+                        {rowInner}
+                      </Link>
+                    ) : (
+                      <div
+                        key={lesson.id}
+                        className="flex items-center gap-4 px-5 py-4 bg-canvas"
+                      >
+                        {rowInner}
                       </div>
-                      <div className="flex items-center gap-3 flex-shrink-0">
-                        {lesson.duration_min && (
-                          <span className="text-xs text-muted">
-                            {lesson.duration_min}분
-                          </span>
-                        )}
-                        <Badge
-                          variant={lesson.tier === "free" ? "free" : "primary"}
-                        >
-                          {lesson.tier === "free" ? "무료" : "프리미엄"}
-                        </Badge>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </section>

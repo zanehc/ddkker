@@ -115,6 +115,20 @@ export interface Comment {
   created_at: string;
 }
 
+/** 수업(lesson)별 댓글/대댓글. parent_id=null이면 댓글, 값이 있으면 대댓글. */
+export interface LessonComment {
+  id: number;
+  lesson_id: number;
+  user_id: string | null;
+  parent_id: number | null;
+  content: string;
+  is_hidden: boolean;
+  created_at: string;
+  updated_at: string;
+  /** 조인된 작성자 프로필 (목록 조회 시) */
+  profiles?: { display_name: string | null; avatar_url: string | null } | null;
+}
+
 export interface Faq {
   id: number;
   question: string;

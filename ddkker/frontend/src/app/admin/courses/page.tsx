@@ -1,6 +1,7 @@
 import { requireAdmin } from "@/lib/server/authz";
 import { adminClient } from "@/lib/server/admin-client";
 import { revalidatePath } from "next/cache";
+import Link from "next/link";
 import type { Course } from "@/types";
 
 export const revalidate = 0;
@@ -239,6 +240,14 @@ export default async function AdminCoursesPage() {
               {/* 편집 폼 */}
               <form action={updateCourse} className="grid md:grid-cols-2 gap-4 p-4 border-t border-hairline-soft bg-surface-soft/40">
                 <input type="hidden" name="id" value={course.id} />
+                <div className="md:col-span-2 flex justify-end -mb-1">
+                  <Link
+                    href={`/admin/courses/${course.id}/lessons`}
+                    className="text-sm font-semibold text-primary hover:underline"
+                  >
+                    📚 이 강의의 수업 관리 →
+                  </Link>
+                </div>
                 <div>
                   <label className="block text-xs font-medium text-muted mb-1">제목 *</label>
                   <input name="title" type="text" required defaultValue={course.title} className={inputCls} />
