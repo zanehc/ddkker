@@ -144,6 +144,8 @@ export function PurchaseButton({
         payMethod: method.payMethod,
         customer: { email, fullName, phoneNumber },
         customData: { userId, courseId },
+        // 모바일 리다이렉트 결제 복귀 경로 (결제완료 페이지가 서버 검증 수행)
+        redirectUrl: `${window.location.origin}/premium/complete?courseId=${courseId}`,
       });
 
       if (!response || response.code != null) {
@@ -152,23 +154,12 @@ export function PurchaseButton({
         return;
       }
 
-      // 서버 검증 + 수강권 부여
-      const res = await fetch("/api/payments/complete", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ paymentId: response.paymentId, courseId }),
-      });
-      const result = await res.json();
-
-      if (!res.ok) {
-        setError(result.error ?? "결제 검증에 실패했습니다.");
-        setLoading(false);
-        return;
-      }
-
-      // 성공 → 수강 화면으로
-      router.push(successHref);
-      router.refresh();
+      // 결제완료 페이지로 이동 → 서버 검증·수강권 부여·결과 표시 (멱등)
+      router.push(
+        `/premium/complete?paymentId=${encodeURIComponent(
+          response.paymentId ?? paymentId
+        )}&courseId=${courseId}`
+      );
     } catch (e) {
       setError((e as Error).message ?? "결제 처리 중 오류가 발생했습니다.");
       setLoading(false);

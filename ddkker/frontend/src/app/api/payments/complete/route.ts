@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
   // 3) 강의 가격 확인 (service role — 신뢰 가능한 금액 출처)
   const { data: course } = await adminClient
     .from("courses")
-    .select("id, price, tier, published, title")
+    .select("id, price, tier, published, title, slug")
     .eq("id", courseId)
     .single();
 
@@ -130,5 +130,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: enrErr.message }, { status: 500 });
   }
 
-  return NextResponse.json({ success: true, courseId: course.id });
+  return NextResponse.json({
+    success: true,
+    courseId: course.id,
+    title: course.title,
+    slug: course.slug,
+  });
 }
