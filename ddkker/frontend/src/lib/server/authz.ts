@@ -32,6 +32,19 @@ export async function requireAdmin() {
 }
 
 /**
+ * 사용자가 관리자(admin_users)인지 확인합니다. (리디렉트 없이 boolean 반환)
+ */
+export async function isUserAdmin(userId: string | null | undefined): Promise<boolean> {
+  if (!userId) return false;
+  const { data } = await adminClient
+    .from("admin_users")
+    .select("user_id")
+    .eq("user_id", userId)
+    .maybeSingle();
+  return !!data;
+}
+
+/**
  * 사용자의 활성 멤버십 여부를 확인합니다.
  */
 export async function hasActiveMembership(userId: string): Promise<boolean> {

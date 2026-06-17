@@ -6,7 +6,7 @@ const ADMIN_NAV = [
   { label: "강의 관리", href: "/admin/courses" },
   { label: "자료 관리", href: "/admin/resources" },
   { label: "FAQ 관리", href: "/admin/faqs" },
-  { label: "멤버십 관리", href: "/admin/members" },
+  { label: "회원·수강권", href: "/admin/members" },
 ] as const;
 
 export default async function AdminLayout({

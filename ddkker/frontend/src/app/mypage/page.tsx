@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { isUserAdmin } from "@/lib/server/authz";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 
@@ -19,26 +20,43 @@ export default async function MyPage() {
     .eq("id", user.id)
     .single();
 
-  // 구매한 강의(수강권) 조회 — enrollments(active) + 강의 정보
-  const { data: enrollmentRows } = await supabase
-    .from("enrollments")
-    .select("granted_at, course:courses(id, title, slug, price, thumbnail_url)")
-    .eq("user_id", user.id)
-    .eq("status", "active")
-    .order("granted_at", { ascending: false });
-
   type Purchased = {
     id: number;
     title: string;
     slug: string;
     price: number;
     thumbnail_url: string | null;
-    granted_at: string;
+    granted_at: string | null;
   };
-  const purchased: Purchased[] = (enrollmentRows ?? [])
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    .map((e: any) => (e.course ? { ...e.course, granted_at: e.granted_at } : null))
-    .filter(Boolean) as Purchased[];
+
+  const isAdmin = await isUserAdmin(user.id);
+
+  let purchased: Purchased[];
+  if (isAdmin) {
+    // 관리자는 모든 프리미엄 강의를 보유 상태로 표시
+    const { data: allPremium } = await supabase
+      .from("courses")
+      .select("id, title, slug, price, thumbnail_url")
+      .eq("tier", "premium")
+      .eq("published", true)
+      .order("sort_order", { ascending: true });
+    purchased = (allPremium ?? []).map((c) => ({
+      ...(c as Omit<Purchased, "granted_at">),
+      granted_at: null,
+    }));
+  } else {
+    // 구매한 강의(수강권) 조회 — enrollments(active) + 강의 정보
+    const { data: enrollmentRows } = await supabase
+      .from("enrollments")
+      .select("granted_at, course:courses(id, title, slug, price, thumbnail_url)")
+      .eq("user_id", user.id)
+      .eq("status", "active")
+      .order("granted_at", { ascending: false });
+    purchased = (enrollmentRows ?? [])
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .map((e: any) => (e.course ? { ...e.course, granted_at: e.granted_at } : null))
+      .filter(Boolean) as Purchased[];
+  }
   const hasPurchases = purchased.length > 0;
 
   return (
@@ -123,6 +141,14 @@ export default async function MyPage() {
             >
               내 강의실 바로가기
             </Link>
+            {isAdmin && (
+              <Link
+                href="/admin"
+                className="w-full py-3 px-4 bg-surface-dark text-on-dark text-center font-semibold rounded-md hover:bg-surface-dark-elevated transition-colors shadow-sm text-sm"
+              >
+                ▌ 관리자 대시보드
+              </Link>
+            )}
           </div>
 
           {/* 오른쪽: 상세 정보 카드들 */}
@@ -132,7 +158,7 @@ export default async function MyPage() {
               <div className="flex items-center justify-between mb-4 pb-2 border-b border-hairline">
                 <h3 className="text-title-md font-bold text-ink">내 프리미엄 강의</h3>
                 <span className="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-primary/10 text-primary">
-                  {purchased.length}개 보유
+                  {isAdmin ? "관리자 · 전체 수강" : `${purchased.length}개 보유`}
                 </span>
               </div>
 
@@ -157,8 +183,9 @@ export default async function MyPage() {
                           {c.title}
                         </p>
                         <p className="text-xs text-muted">
-                          {new Date(c.granted_at).toLocaleDateString("ko-KR")} 구매
-                          · 영구 수강
+                          {c.granted_at
+                            ? `${new Date(c.granted_at).toLocaleDateString("ko-KR")} 구매 · 영구 수강`
+                            : "관리자 권한 · 전체 수강"}
                         </p>
                       </div>
                       <Link

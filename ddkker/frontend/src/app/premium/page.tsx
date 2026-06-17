@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { isUserAdmin } from "@/lib/server/authz";
 import { PremiumCourses } from "@/components/sections/PremiumCourses";
 import { FaqAccordion } from "@/components/sections/FaqAccordion";
 import { BusinessInfo } from "@/components/legal/BusinessInfo";
@@ -36,12 +37,17 @@ export default async function PremiumPage() {
 
   let enrolledCourseIds: number[] = [];
   if (user) {
-    const { data: enr } = await supabase
-      .from("enrollments")
-      .select("course_id")
-      .eq("user_id", user.id)
-      .eq("status", "active");
-    enrolledCourseIds = (enr ?? []).map((e) => e.course_id as number);
+    // 관리자는 모든 강의를 수강 상태로 취급
+    if (await isUserAdmin(user.id)) {
+      enrolledCourseIds = courses.map((c) => c.id);
+    } else {
+      const { data: enr } = await supabase
+        .from("enrollments")
+        .select("course_id")
+        .eq("user_id", user.id)
+        .eq("status", "active");
+      enrolledCourseIds = (enr ?? []).map((e) => e.course_id as number);
+    }
   }
 
   // 멤버십(=프리미엄) 관련 FAQ

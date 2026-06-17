@@ -41,13 +41,6 @@ export default function LoginPage({
           {/* Google */}
           <GoogleLoginButton next={next} />
 
-          {/* 구분선 */}
-          <div className="flex items-center gap-3 my-1">
-            <div className="flex-1 h-px bg-hairline" />
-            <span className="text-xs text-muted">또는</span>
-            <div className="flex-1 h-px bg-hairline" />
-          </div>
-
           {/* Kakao */}
           <a
             href={kakaoHref}

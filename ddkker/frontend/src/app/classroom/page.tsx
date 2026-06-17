@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { isUserAdmin } from "@/lib/server/authz";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getCourseThumbnail } from "@/lib/course-thumbnails";
@@ -46,6 +47,9 @@ export default async function ClassroomPage() {
     (enrollmentRows ?? []).map((e) => e.course_id as number)
   );
 
+  // 관리자는 전체 강의 접근 가능
+  const isAdmin = await isUserAdmin(user.id);
+
   // 2. 전체 강의 목록 조회 (published = true)
   const { data: courses } = await supabase
     .from("courses")
@@ -87,13 +91,13 @@ export default async function ClassroomPage() {
               <span className="text-muted">학습자 권한: </span>
               <span
                 className={`font-semibold ${
-                  isPremium ? "text-primary" : "text-body-strong"
+                  isAdmin || isPremium ? "text-primary" : "text-body-strong"
                 }`}
               >
-                {isPremium ? "프리미엄회원" : "일반회원"}
+                {isAdmin ? "관리자" : isPremium ? "프리미엄회원" : "일반회원"}
               </span>
             </div>
-            {!isPremium && (
+            {!isAdmin && !isPremium && (
               <Link
                 href="/premium"
                 className="py-1.5 px-3 bg-primary text-white text-xs font-semibold rounded-md hover:bg-primary-active transition-colors"
@@ -113,7 +117,10 @@ export default async function ClassroomPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {typedCourses.map((course) => {
               const hasAccess =
-                course.tier === "free" || isPremium || enrolledIds.has(course.id);
+                course.tier === "free" ||
+                isAdmin ||
+                isPremium ||
+                enrolledIds.has(course.id);
               const thumbnailUrl = getCourseThumbnail(course);
               const linkHref = hasAccess
                 ? `/courses/${course.slug}`
