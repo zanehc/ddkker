@@ -129,7 +129,7 @@ export function Footer() {
           {/* 카피라이트 */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <p className="text-xs text-on-dark-soft">
-              &copy; {new Date().getFullYear()} 딸깍테크닉 / 하나상사. All rights reserved.
+              &copy; {new Date().getFullYear()} 딸깍테크닉 / {BUSINESS.name}. All rights reserved.
             </p>
             <div className="flex gap-4 text-xs text-on-dark-soft">
               <Link href="/terms" className="hover:text-on-dark transition-colors">이용약관</Link>

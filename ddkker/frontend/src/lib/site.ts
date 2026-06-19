@@ -5,17 +5,19 @@
  */
 export const BUSINESS = {
   serviceName: "딸깍테크닉",
-  name: "하나상사",
-  ceo: "WANG YING",
-  bizRegNo: "449-04-03516",
-  mailOrderNo: "제2025-전남나주-0174호", // 통신판매업 신고번호
-  address: "전라남도 나주시 금천면 천석길 35",
+  name: "베리윤",
+  ceo: "윤지원",
+  bizRegNo: "875-58-00614",
+  // 통신판매업 신고번호는 사업자등록증에 없음(별도 신고 사항). 신고 후 기입.
+  // 간이과세자는 일정 기준 미만 시 통신판매업 신고 면제 대상일 수 있음.
+  mailOrderNo: "",
+  address: "전라남도 순천시 중앙로 530, 101동 902호(가곡동, 대광로제비앙 리버팰리스)",
   tel: "070-8095-7438",
   email: "enen.zanehc@gmail.com",
-  privacyOfficer: "WANG YING", // 개인정보 보호책임자 (대표자 겸임)
+  privacyOfficer: "윤지원", // 개인정보 보호책임자 (대표자 겸임)
 } as const;
 
-/** "전화번호" 등 라벨-값 쌍 (BusinessInfo 렌더용) */
+/** "전화번호" 등 라벨-값 쌍 (BusinessInfo 렌더용). 값이 빈 항목은 표시하지 않는다. */
 export const BUSINESS_FIELDS: { label: string; value: string }[] = [
   { label: "상호", value: BUSINESS.name },
   { label: "대표자", value: BUSINESS.ceo },
@@ -24,4 +26,4 @@ export const BUSINESS_FIELDS: { label: string; value: string }[] = [
   { label: "사업장 주소", value: BUSINESS.address },
   { label: "전화번호", value: BUSINESS.tel },
   { label: "이메일", value: BUSINESS.email },
-];
+].filter((f) => f.value.trim() !== "");

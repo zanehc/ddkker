@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BusinessInfo } from "@/components/legal/BusinessInfo";
+import { BUSINESS } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "이용약관 — 딸깍테크닉",
@@ -19,7 +20,7 @@ export default function TermsPage() {
           <section>
             <h2 className="font-semibold text-ink text-base mb-3">제1조 (목적)</h2>
             <p>
-              이 약관은 하나상사(대표 WANG YING, 사업자등록번호 449-04-03516, 이하 &quot;회사&quot;)가
+              이 약관은 {BUSINESS.name}(대표 {BUSINESS.ceo}, 사업자등록번호 {BUSINESS.bizRegNo}, 이하 &quot;회사&quot;)가
               운영하는 딸깍테크닉(이하 &quot;서비스&quot;)의 이용조건 및 절차, 회사와 이용자 간의
               권리·의무 및 책임사항을 규정함을 목적으로 합니다.
             </p>

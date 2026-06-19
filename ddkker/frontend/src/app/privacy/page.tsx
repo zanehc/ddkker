@@ -17,7 +17,7 @@ export default function PrivacyPage() {
         <div className="prose prose-sm max-w-none text-body leading-relaxed space-y-8">
 
           <p>
-            하나상사(이하 &quot;회사&quot;)가 운영하는 딸깍테크닉(이하 &quot;서비스&quot;)은 이용자의
+            {BUSINESS.name}(이하 &quot;회사&quot;)가 운영하는 딸깍테크닉(이하 &quot;서비스&quot;)은 이용자의
             개인정보를 소중히 여기며, 「개인정보 보호법」 및 「정보통신망 이용촉진 및
             정보보호 등에 관한 법률」에 따라 아래와 같이 개인정보처리방침을 수립·공개합니다.
           </p>
@@ -124,7 +124,7 @@ export default function PrivacyPage() {
               <li>개인정보 열람 요청</li>
               <li>개인정보 정정·삭제 요청</li>
               <li>처리 정지 요청</li>
-              <li>회원 탈퇴 (enen.zanehc@gmail.com으로 요청)</li>
+              <li>회원 탈퇴 ({BUSINESS.email}으로 요청)</li>
             </ul>
           </section>
 
