@@ -98,7 +98,7 @@ export function Footer() {
             </div>
             <div className="flex gap-1.5">
               <dt className="text-on-dark/60">사업자등록번호</dt>
-              <dd>{BUSINESS.bizRegNo}</dd>
+              <dd>{BUSINESS.bizRegNo} ({BUSINESS.taxType})</dd>
             </div>
             <div className="flex gap-1.5">
               <dt className="text-on-dark/60">전화</dt>
