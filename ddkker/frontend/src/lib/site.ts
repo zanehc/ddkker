@@ -13,7 +13,7 @@ export const BUSINESS = {
   mailOrderNo: "",
   address: "전라남도 순천시 중앙로 530, 101동 902호(가곡동, 대광로제비앙 리버팰리스)",
   tel: "070-8095-7438",
-  email: "enen.zanehc@gmail.com",
+  email: "enen.yjwhc@gmail.com",
   privacyOfficer: "윤지원", // 개인정보 보호책임자 (대표자 겸임)
 } as const;
 

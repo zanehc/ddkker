@@ -101,10 +101,6 @@ export function Footer() {
               <dd>{BUSINESS.bizRegNo}</dd>
             </div>
             <div className="flex gap-1.5">
-              <dt className="text-on-dark/60">통신판매업신고</dt>
-              <dd>{BUSINESS.mailOrderNo}</dd>
-            </div>
-            <div className="flex gap-1.5">
               <dt className="text-on-dark/60">전화</dt>
               <dd>
                 <a href={`tel:${BUSINESS.tel}`} className="hover:text-on-dark transition-colors">
