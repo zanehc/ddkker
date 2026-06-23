@@ -64,7 +64,7 @@ export default function LoginPage({
           에 동의하는 것으로 간주됩니다.
         </p>
 
-        <BusinessInfo className="mt-8" />
+        <BusinessInfo className="mt-8" singleColumn />
       </div>
     </main>
   );

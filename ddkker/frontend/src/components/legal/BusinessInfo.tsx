@@ -8,9 +8,11 @@ import { BUSINESS_FIELDS, BUSINESS } from "@/lib/site";
 export function BusinessInfo({
   title = "사업자 정보",
   className = "",
+  singleColumn = false,
 }: {
   title?: string | null;
   className?: string;
+  singleColumn?: boolean;
 }) {
   return (
     <div
@@ -19,7 +21,11 @@ export function BusinessInfo({
       {title && (
         <h3 className="font-semibold text-ink mb-3 text-sm">{title}</h3>
       )}
-      <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1.5">
+      <dl
+        className={`grid gap-x-6 gap-y-1.5 ${
+          singleColumn ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2"
+        }`}
+      >
         {BUSINESS_FIELDS.map((f) => (
           <div key={f.label} className="flex gap-2">
             <dt className="text-muted shrink-0 w-24">{f.label}</dt>
