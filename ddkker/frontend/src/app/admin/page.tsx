@@ -72,7 +72,8 @@ export default async function AdminDashboard() {
     amount: number;
     created_at: string;
     user_id: string;
-    profiles: { display_name: string | null } | null;
+    // PostgREST 임베드는 배열로 반환된다
+    profiles: { display_name: string | null }[] | null;
   }[];
   const revenue = paid.reduce((s, p) => s + (p.amount ?? 0), 0);
   const revenueByCourse = new Map<number, number>();
@@ -136,7 +137,7 @@ export default async function AdminDashboard() {
                       {courseMap.get(p.course_id)?.title ?? `강의 #${p.course_id}`}
                     </p>
                     <p className="text-xs text-muted truncate">
-                      {p.profiles?.display_name ?? "이름 없음"} · {date(p.created_at)}
+                      {p.profiles?.[0]?.display_name ?? "이름 없음"} · {date(p.created_at)}
                     </p>
                   </div>
                   <span className="text-sm font-semibold text-primary shrink-0 tabular-nums">
