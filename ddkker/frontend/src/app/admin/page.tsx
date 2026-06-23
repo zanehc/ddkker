@@ -40,7 +40,7 @@ export default async function AdminDashboard() {
     adminClient.from("enrollments").select("course_id").eq("status", "active"),
     adminClient
       .from("payments")
-      .select("payment_id, course_id, amount, created_at")
+      .select("payment_id, course_id, amount, created_at, user_id, profiles(display_name)")
       .eq("status", "paid")
       .order("created_at", { ascending: false }),
     adminClient.from("resources").select("id", { count: "exact", head: true }).eq("published", true),
@@ -71,6 +71,8 @@ export default async function AdminDashboard() {
     course_id: number;
     amount: number;
     created_at: string;
+    user_id: string;
+    profiles: { display_name: string | null } | null;
   }[];
   const revenue = paid.reduce((s, p) => s + (p.amount ?? 0), 0);
   const revenueByCourse = new Map<number, number>();
@@ -133,7 +135,9 @@ export default async function AdminDashboard() {
                     <p className="text-sm font-medium text-ink truncate">
                       {courseMap.get(p.course_id)?.title ?? `강의 #${p.course_id}`}
                     </p>
-                    <p className="text-xs text-muted">{date(p.created_at)}</p>
+                    <p className="text-xs text-muted truncate">
+                      {p.profiles?.display_name ?? "이름 없음"} · {date(p.created_at)}
+                    </p>
                   </div>
                   <span className="text-sm font-semibold text-primary shrink-0 tabular-nums">
                     {won(p.amount)}
