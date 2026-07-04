@@ -96,17 +96,36 @@ export function TopNav() {
           <span className="font-display tracking-tight">딸깍테크닉</span>
         </Link>
 
-        {/* 데스크톱 네비게이션 */}
-        <nav className="hidden md:flex items-center gap-1">
-          {NAV_LINKS.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="px-3 py-2 text-sm font-medium text-muted hover:text-ink transition-colors rounded-md hover:bg-surface-soft"
-            >
-              {link.label}
-            </Link>
-          ))}
+        {/* 데스크톱 네비게이션 (한 줄 고정) */}
+        <nav className="hidden md:flex items-center gap-0.5 flex-nowrap">
+          {NAV_LINKS.map((link) =>
+            link.href === "/youtube" ? (
+              <Link
+                key={link.href}
+                href={link.href}
+                aria-label="유튜브"
+                title="유튜브"
+                className="p-2 text-muted hover:text-[#FF0000] transition-colors rounded-md hover:bg-surface-soft shrink-0"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                  className="w-5 h-5"
+                >
+                  <path d="M23.5 6.2a3.02 3.02 0 00-2.12-2.14C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.51A3.02 3.02 0 00.5 6.2 31.5 31.5 0 000 12a31.5 31.5 0 00.5 5.8 3.02 3.02 0 002.12 2.14c1.88.51 9.38.51 9.38.51s7.5 0 9.38-.51a3.02 3.02 0 002.12-2.14A31.5 31.5 0 0024 12a31.5 31.5 0 00-.5-5.8zM9.55 15.57V8.43L15.82 12l-6.27 3.57z" />
+                </svg>
+              </Link>
+            ) : (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="px-2.5 py-2 text-sm font-medium text-muted hover:text-ink transition-colors rounded-md hover:bg-surface-soft whitespace-nowrap shrink-0"
+              >
+                {link.label}
+              </Link>
+            )
+          )}
         </nav>
 
         {/* 우측 액션 — 데스크톱 */}
