@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
@@ -39,7 +39,9 @@ function toNavUser(user: User | null): NavUser | null {
  */
 export function TopNav() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState<NavUser | null>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -53,10 +55,30 @@ export function TopNav() {
     return () => subscription.unsubscribe();
   }, []);
 
+  // 유저 드롭다운: 바깥 클릭 / ESC 로 닫기
+  useEffect(() => {
+    if (!menuOpen) return;
+    function onPointerDown(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    }
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") setMenuOpen(false);
+    }
+    document.addEventListener("mousedown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [menuOpen]);
+
   async function handleSignOut() {
     const supabase = createClient();
     await supabase.auth.signOut();
     setUser(null);
+    setMenuOpen(false);
     setMobileOpen(false);
     router.refresh();
   }
@@ -90,38 +112,73 @@ export function TopNav() {
         {/* 우측 액션 — 데스크톱 */}
         <div className="hidden md:flex items-center gap-4 shrink-0">
           {user ? (
-            <>
-              <Link
-                href="/classroom"
-                className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors"
+            <div className="relative" ref={menuRef}>
+              {/* 트리거: 아바타 원형 버튼만 (클릭 시 드롭다운) */}
+              <button
+                type="button"
+                onClick={() => setMenuOpen((prev) => !prev)}
+                aria-haspopup="menu"
+                aria-expanded={menuOpen}
+                aria-label="내 계정 메뉴"
+                className={cn(
+                  "flex items-center justify-center w-9 h-9 rounded-full border border-hairline overflow-hidden transition-shadow hover:ring-2 hover:ring-primary/20",
+                  menuOpen && "ring-2 ring-primary/30"
+                )}
               >
-                내 강의실
-              </Link>
-              <Link
-                href="/mypage"
-                className="text-sm font-medium text-muted hover:text-ink transition-colors"
-              >
-                마이페이지
-              </Link>
-              <span className="flex items-center gap-2 text-sm font-medium text-ink border-l border-hairline pl-4">
-                {user.avatarUrl && (
+                {user.avatarUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={user.avatarUrl}
                     alt=""
                     referrerPolicy="no-referrer"
-                    className="w-7 h-7 rounded-full object-cover border border-hairline"
+                    className="w-full h-full rounded-full object-cover"
                   />
+                ) : (
+                  <span className="w-full h-full rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-semibold">
+                    {user.name.charAt(0)}
+                  </span>
                 )}
-                <span className="max-w-[120px] truncate">{user.name}</span>
-              </span>
-              <button
-                onClick={handleSignOut}
-                className="text-sm font-medium text-muted hover:text-ink transition-colors"
-              >
-                로그아웃
               </button>
-            </>
+
+              {/* 드롭다운 메뉴 */}
+              {menuOpen && (
+                <div
+                  role="menu"
+                  className="absolute right-0 mt-2 w-48 rounded-lg border border-hairline bg-canvas shadow-lg py-1 z-50"
+                >
+                  <div className="px-4 py-2 border-b border-hairline">
+                    <p className="text-xs text-muted">로그인 계정</p>
+                    <p className="text-sm font-medium text-ink truncate">
+                      {user.name}
+                    </p>
+                  </div>
+                  <Link
+                    href="/classroom"
+                    role="menuitem"
+                    onClick={() => setMenuOpen(false)}
+                    className="block px-4 py-2.5 text-sm font-semibold text-primary hover:bg-surface-soft transition-colors"
+                  >
+                    내 강의실
+                  </Link>
+                  <Link
+                    href="/mypage"
+                    role="menuitem"
+                    onClick={() => setMenuOpen(false)}
+                    className="block px-4 py-2.5 text-sm font-medium text-ink hover:bg-surface-soft transition-colors"
+                  >
+                    마이페이지
+                  </Link>
+                  <button
+                    type="button"
+                    role="menuitem"
+                    onClick={handleSignOut}
+                    className="block w-full text-left px-4 py-2.5 text-sm font-medium text-muted hover:text-ink hover:bg-surface-soft transition-colors border-t border-hairline"
+                  >
+                    로그아웃
+                  </button>
+                </div>
+              )}
+            </div>
           ) : (
             <>
               <Link
