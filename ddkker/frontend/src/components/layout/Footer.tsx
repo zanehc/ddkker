@@ -32,6 +32,7 @@ const FOOTER_LINKS = [
     heading: "회사",
     links: [
       { label: "소개", href: "/" },
+      { label: "외주 개발 의뢰", href: "/outsourcing" },
       { label: "FAQ", href: "/faq" },
       { label: "이용약관", href: "/terms" },
       { label: "개인정보처리방침", href: "/privacy" },

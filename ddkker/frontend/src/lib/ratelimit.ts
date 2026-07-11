@@ -23,6 +23,15 @@ export const postRatelimit = new Ratelimit({
 });
 
 /**
+ * 외주 의뢰 접수 rate limit — 10분에 3건
+ */
+export const inquiryRatelimit = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(3, "10 m"),
+  prefix: "rl:inquiry",
+});
+
+/**
  * Rate limit을 확인하고, 초과 시 429 응답을 반환합니다.
  * @returns null — 통과, NextResponse — 거부
  */

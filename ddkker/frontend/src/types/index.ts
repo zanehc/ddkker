@@ -68,6 +68,44 @@ export interface Payment {
   updated_at: string;
 }
 
+// ── 외주 의뢰(project_inquiries) ─────────────────────────
+export type ProjectType = "web" | "app" | "automation" | "ai" | "data" | "design" | "etc";
+export type BudgetRange =
+  | "under_100"
+  | "100_300"
+  | "300_500"
+  | "500_1000"
+  | "over_1000"
+  | "undecided";
+export type InquirySource = "kmong" | "talentnet" | "wishket" | "soomgo" | "direct" | "other";
+export type InquiryStatus =
+  | "new"
+  | "contacted"
+  | "quoted"
+  | "contracted"
+  | "done"
+  | "dropped";
+
+export interface ProjectInquiry {
+  id: number;
+  user_id: string | null;
+  contact_name: string;
+  contact_email: string;
+  contact_phone: string | null;
+  project_type: ProjectType;
+  budget_range: BudgetRange | null;
+  timeline: string | null;
+  title: string;
+  description: string;
+  source: InquirySource;
+  status: InquiryStatus;
+  admin_note: string | null;
+  privacy_ack_at: string | null;
+  privacy_notice_version: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Lesson {
   id: number;
   course_id: number;

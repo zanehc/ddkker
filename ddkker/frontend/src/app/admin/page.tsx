@@ -1,5 +1,7 @@
 import { requireAdmin } from "@/lib/server/authz";
 import { adminClient } from "@/lib/server/admin-client";
+import { SOURCE_LABELS, STATUS_LABELS } from "@/lib/inquiry";
+import type { InquirySource, InquiryStatus } from "@/types";
 import Link from "next/link";
 
 export const revalidate = 0;
@@ -31,6 +33,8 @@ export default async function AdminDashboard() {
     { count: faqCount },
     { count: postCount },
     { data: recentProfiles },
+    { count: newInquiryCount },
+    { data: recentInquiries },
   ] = await Promise.all([
     adminClient.from("profiles").select("id", { count: "exact", head: true }),
     adminClient
@@ -51,7 +55,24 @@ export default async function AdminDashboard() {
       .select("id, display_name, provider, created_at")
       .order("created_at", { ascending: false })
       .limit(6),
+    adminClient
+      .from("project_inquiries")
+      .select("id", { count: "exact", head: true })
+      .eq("status", "new"),
+    adminClient
+      .from("project_inquiries")
+      .select("id, title, source, status, created_at")
+      .order("created_at", { ascending: false })
+      .limit(5),
   ]);
+
+  const inquiries = (recentInquiries ?? []) as {
+    id: number;
+    title: string;
+    source: string;
+    status: string;
+    created_at: string;
+  }[];
 
   const courses = (coursesData ?? []) as CourseRow[];
   const courseMap = new Map(courses.map((c) => [c.id, c]));
@@ -217,6 +238,35 @@ export default async function AdminDashboard() {
         )}
       </section>
 
+      {/* 최근 외주 의뢰 */}
+      <section className="bg-canvas border border-hairline rounded-xl p-6 mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-title-md font-semibold text-ink">최근 외주 의뢰</h2>
+          <Link href="/admin/inquiries" className="text-xs text-primary hover:underline">
+            의뢰 관리 →
+          </Link>
+        </div>
+        {inquiries.length === 0 ? (
+          <p className="text-muted text-sm py-6 text-center">아직 접수된 의뢰가 없습니다.</p>
+        ) : (
+          <ul className="divide-y divide-hairline">
+            {inquiries.map((q) => (
+              <li key={q.id} className="flex items-center justify-between gap-3 py-2.5">
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-ink truncate">{q.title}</p>
+                  <p className="text-xs text-muted">
+                    {SOURCE_LABELS[q.source as InquirySource] ?? q.source} · {date(q.created_at)}
+                  </p>
+                </div>
+                <span className="text-[11px] font-semibold px-2 py-0.5 rounded-pill bg-primary/10 text-primary shrink-0">
+                  {STATUS_LABELS[q.status as InquiryStatus] ?? q.status}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
       {/* 운영 현황 (콘텐츠/커뮤니티 + 관리 바로가기) */}
       <section className="bg-canvas border border-hairline rounded-xl p-6">
         <h2 className="text-title-md font-semibold text-ink mb-4">콘텐츠 · 운영</h2>
@@ -226,6 +276,7 @@ export default async function AdminDashboard() {
             { label: "자료실", value: resourceCount ?? 0, sub: "공개 자료", href: "/admin/resources", cta: "관리" },
             { label: "FAQ", value: faqCount ?? 0, sub: "질문", href: "/admin/faqs", cta: "관리" },
             { label: "커뮤니티 글", value: postCount ?? 0, sub: "게시글", href: "/community", cta: "보기" },
+            { label: "외주 의뢰", value: newInquiryCount ?? 0, sub: "미처리", href: "/admin/inquiries", cta: "관리" },
           ].map((m) => (
             <Link
               key={m.label}

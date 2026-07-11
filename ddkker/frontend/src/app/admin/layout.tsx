@@ -7,6 +7,7 @@ const ADMIN_NAV = [
   { label: "자료 관리", href: "/admin/resources" },
   { label: "FAQ 관리", href: "/admin/faqs" },
   { label: "회원·수강권", href: "/admin/members" },
+  { label: "외주 의뢰", href: "/admin/inquiries" },
 ] as const;
 
 export default async function AdminLayout({
