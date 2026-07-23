@@ -3,6 +3,7 @@ import { adminClient } from "@/lib/server/admin-client";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { LessonComments } from "@/components/lessons/LessonComments";
+import { activeEnrollmentFilter } from "@/lib/enrollment";
 
 export const dynamic = "force-dynamic";
 
@@ -44,6 +45,7 @@ export default async function LessonWatchPage({ params }: PageProps) {
         .eq("user_id", user.id)
         .eq("course_id", course.id)
         .eq("status", "active")
+        .or(activeEnrollmentFilter())
         .maybeSingle(),
       adminClient
         .from("admin_users")

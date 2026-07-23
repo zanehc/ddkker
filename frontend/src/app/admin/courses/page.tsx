@@ -21,6 +21,12 @@ const CATEGORY_OPTIONS: { value: string; label: string }[] = [
 
 const won = (n: number) => `₩${(n ?? 0).toLocaleString("ko-KR")}`;
 
+// 수강 개월 수 입력 → 양수 또는 null(무기한). 빈칸/0/음수는 무기한으로 본다.
+function parseAccessMonths(raw: string | null): number | null {
+  const n = parseInt(raw || "", 10);
+  return Number.isFinite(n) && n > 0 ? n : null;
+}
+
 // 줄바꿈으로 구분된 텍스트 → 문자열 배열
 function parseHighlights(raw: string): string[] {
   return raw
@@ -59,6 +65,7 @@ async function createCourse(formData: FormData) {
   const price = parseInt((formData.get("price") as string) || "0", 10);
   const highlights = parseHighlights((formData.get("highlights") as string) || "");
   const sortOrder = parseInt((formData.get("sort_order") as string) || "0", 10);
+  const accessMonths = parseAccessMonths(formData.get("access_months") as string);
 
   if (!title?.trim() || !slug?.trim()) return;
 
@@ -71,6 +78,7 @@ async function createCourse(formData: FormData) {
     tier: tier || "free",
     price: Number.isFinite(price) ? price : 0,
     highlights,
+    access_months: accessMonths,
     sort_order: sortOrder,
     published: false,
   });
@@ -100,6 +108,7 @@ async function updateCourse(formData: FormData) {
   const price = parseInt((formData.get("price") as string) || "0", 10);
   const highlights = parseHighlights((formData.get("highlights") as string) || "");
   const sortOrder = parseInt((formData.get("sort_order") as string) || "0", 10);
+  const accessMonths = parseAccessMonths(formData.get("access_months") as string);
 
   const { error } = await adminClient
     .from("courses")
@@ -112,6 +121,7 @@ async function updateCourse(formData: FormData) {
       tier: (formData.get("tier") as string) || "free",
       price: Number.isFinite(price) ? price : 0,
       highlights,
+      access_months: accessMonths,
       sort_order: sortOrder,
       updated_at: new Date().toISOString(),
     })
@@ -165,7 +175,7 @@ export default async function AdminCoursesPage() {
             <label className="block text-xs font-medium text-muted mb-1">
               커리큘럼 하이라이트 (한 줄에 하나씩 — 프리미엄 카드 불릿)
             </label>
-            <textarea name="highlights" rows={4} className={`${inputCls} resize-none`} placeholder={"멀티 에이전트 오케스트레이션\n로컬AI 스택 구축\n소스코드 · 영구 수강 포함"} />
+            <textarea name="highlights" rows={4} className={`${inputCls} resize-none`} placeholder={"멀티 에이전트 오케스트레이션\n로컬AI 스택 구축\n소스코드 · 12개월 수강 포함"} />
           </div>
           <div>
             <label className="block text-xs font-medium text-muted mb-1">카테고리</label>
@@ -195,6 +205,10 @@ export default async function AdminCoursesPage() {
           <div>
             <label className="block text-xs font-medium text-muted mb-1">가격 (원, 0=무료)</label>
             <input name="price" type="number" min={0} step={1000} defaultValue={0} className={inputCls} />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-muted mb-1">수강 기간 (개월, 비우면 무기한)</label>
+            <input name="access_months" type="number" min={1} step={1} defaultValue={12} className={inputCls} />
           </div>
           <div>
             <label className="block text-xs font-medium text-muted mb-1">정렬 순서</label>
@@ -292,6 +306,10 @@ export default async function AdminCoursesPage() {
                 <div>
                   <label className="block text-xs font-medium text-muted mb-1">가격 (원, 0=무료)</label>
                   <input name="price" type="number" min={0} step={1000} defaultValue={course.price ?? 0} className={inputCls} />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-muted mb-1">수강 기간 (개월, 비우면 무기한)</label>
+                  <input name="access_months" type="number" min={1} step={1} defaultValue={course.access_months ?? ""} className={inputCls} />
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-muted mb-1">정렬 순서</label>

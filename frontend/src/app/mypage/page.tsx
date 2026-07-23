@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { isUserAdmin } from "@/lib/server/authz";
+import { isExpired, daysLeft } from "@/lib/enrollment";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 
@@ -27,6 +28,7 @@ export default async function MyPage() {
     price: number;
     thumbnail_url: string | null;
     granted_at: string | null;
+    expires_at: string | null;
   };
 
   const isAdmin = await isUserAdmin(user.id);
@@ -41,20 +43,26 @@ export default async function MyPage() {
       .eq("published", true)
       .order("sort_order", { ascending: true });
     purchased = (allPremium ?? []).map((c) => ({
-      ...(c as Omit<Purchased, "granted_at">),
+      ...(c as Omit<Purchased, "granted_at" | "expires_at">),
       granted_at: null,
+      expires_at: null,
     }));
   } else {
-    // 구매한 강의(수강권) 조회 — enrollments(active) + 강의 정보
+    // 구매한 강의(수강권) 조회 — enrollments(active) + 강의 정보.
+    // 만료분도 함께 가져와 "만료됨"으로 표시한다(구매 이력이 사라지면 혼란스러움).
     const { data: enrollmentRows } = await supabase
       .from("enrollments")
-      .select("granted_at, course:courses(id, title, slug, price, thumbnail_url)")
+      .select("granted_at, expires_at, course:courses(id, title, slug, price, thumbnail_url)")
       .eq("user_id", user.id)
       .eq("status", "active")
       .order("granted_at", { ascending: false });
     purchased = (enrollmentRows ?? [])
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .map((e: any) => (e.course ? { ...e.course, granted_at: e.granted_at } : null))
+      .map((e: any) =>
+        e.course
+          ? { ...e.course, granted_at: e.granted_at, expires_at: e.expires_at }
+          : null
+      )
       .filter(Boolean) as Purchased[];
   }
   const hasPurchases = purchased.length > 0;
@@ -183,17 +191,30 @@ export default async function MyPage() {
                           {c.title}
                         </p>
                         <p className="text-xs text-muted">
-                          {c.granted_at
-                            ? `${new Date(c.granted_at).toLocaleDateString("ko-KR")} 구매 · 영구 수강`
-                            : "관리자 권한 · 전체 수강"}
+                          {!c.granted_at
+                            ? "관리자 권한 · 전체 수강"
+                            : isExpired(c.expires_at)
+                              ? `${new Date(c.expires_at!).toLocaleDateString("ko-KR")} 만료됨`
+                              : c.expires_at
+                                ? `${new Date(c.granted_at).toLocaleDateString("ko-KR")} 구매 · ${new Date(c.expires_at).toLocaleDateString("ko-KR")}까지 (${daysLeft(c.expires_at)}일 남음)`
+                                : `${new Date(c.granted_at).toLocaleDateString("ko-KR")} 구매 · 무기한 수강`}
                         </p>
                       </div>
-                      <Link
-                        href={`/courses/${c.slug}`}
-                        className="shrink-0 py-2 px-3 bg-primary text-white text-xs font-semibold rounded-md hover:bg-primary-active transition-colors"
-                      >
-                        수강하기
-                      </Link>
+                      {isExpired(c.expires_at) ? (
+                        <Link
+                          href={`/premium`}
+                          className="shrink-0 py-2 px-3 bg-surface-soft text-muted text-xs font-semibold rounded-md border border-hairline hover:text-ink transition-colors"
+                        >
+                          재구매
+                        </Link>
+                      ) : (
+                        <Link
+                          href={`/courses/${c.slug}`}
+                          className="shrink-0 py-2 px-3 bg-primary text-white text-xs font-semibold rounded-md hover:bg-primary-active transition-colors"
+                        >
+                          수강하기
+                        </Link>
+                      )}
                     </li>
                   ))}
                 </ul>

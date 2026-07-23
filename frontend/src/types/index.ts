@@ -37,6 +37,8 @@ export interface Course {
   tier: Tier;
   price: number;
   highlights: string[];
+  /** 구매 후 수강 가능 개월 수. null이면 무기한. */
+  access_months: number | null;
   sort_order: number;
   published: boolean;
   created_at: string;
@@ -54,6 +56,8 @@ export interface Enrollment {
   source: "payment" | "manual";
   payment_id: string | null;
   granted_at: string;
+  /** 수강권 만료 시각. null이면 무기한(기존 영구 수강권·관리자 수동 부여). */
+  expires_at: string | null;
   note: string | null;
 }
 

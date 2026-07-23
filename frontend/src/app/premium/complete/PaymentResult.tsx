@@ -6,7 +6,13 @@ import { Button } from "@/components/ui/Button";
 
 type Result =
   | { status: "loading" }
-  | { status: "success"; title: string; slug: string | null }
+  | {
+      status: "success";
+      title: string;
+      slug: string | null;
+      /** 수강권 만료 시각(ISO). null이면 무기한. */
+      expiresAt: string | null;
+    }
   | { status: "fail"; message: string };
 
 /**
@@ -51,6 +57,7 @@ export function PaymentResult() {
             status: "success",
             title: data.title ?? "프리미엄 강의",
             slug: data.slug ?? null,
+            expiresAt: data.expiresAt ?? null,
           });
         } else {
           setResult({
@@ -109,8 +116,18 @@ export function PaymentResult() {
         <span className="font-semibold text-ink">{result.title}</span>
       </p>
       <p className="text-muted text-sm mb-8 max-w-[440px]">
-        수강권이 부여되었습니다. 이제 <b className="text-ink">내 강의실</b>에서
-        이 강의를 <b className="text-ink">영구 수강</b>하실 수 있습니다.
+        수강권이 부여되었습니다. 이제 <b className="text-ink">내 강의실</b>에서 이 강의를
+        수강하실 수 있습니다.
+        {result.expiresAt ? (
+          <>
+            {" "}
+            수강 기간은{" "}
+            <b className="text-ink">
+              {new Date(result.expiresAt).toLocaleDateString("ko-KR")}
+            </b>
+            까지입니다.
+          </>
+        ) : null}
       </p>
       <div className="flex flex-col sm:flex-row gap-3">
         {result.slug && (

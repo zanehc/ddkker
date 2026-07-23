@@ -43,8 +43,8 @@ export function PremiumCourses({ courses, userId, enrolledCourseIds }: Props) {
             프리미엄 강의
           </h2>
           <p className="text-muted text-lg max-w-[560px] mx-auto">
-            강의별로 한 번 구매하면 영구 수강. 필요한 고급 강의만 골라
-            소스코드와 자료까지 평생 소장하세요.
+            강의별로 한 번 구매하면 12개월 수강. 필요한 고급 강의만 골라
+            소스코드와 자료까지 함께 이용하세요.
           </p>
         </div>
 
@@ -81,7 +81,7 @@ export function PremiumCourses({ courses, userId, enrolledCourseIds }: Props) {
                 <div className="text-display-sm font-bold text-ink">
                   {won(flagship.price)}
                 </div>
-                <div className="text-muted text-sm">1회 구매 · 영구 수강</div>
+                <div className="text-muted text-sm">1회 구매 · 12개월 수강</div>
               </div>
               <PurchaseButton
                 courseId={flagship.id}
@@ -126,7 +126,7 @@ export function PremiumCourses({ courses, userId, enrolledCourseIds }: Props) {
                   <span className="text-title-lg font-bold text-ink">
                     {won(course.price)}
                   </span>
-                  <span className="text-muted text-sm">1회 구매 · 영구 수강</span>
+                  <span className="text-muted text-sm">1회 구매 · 12개월 수강</span>
                 </div>
                 <PurchaseButton
                   courseId={course.id}
@@ -146,7 +146,8 @@ export function PremiumCourses({ courses, userId, enrolledCourseIds }: Props) {
         <div className="mt-10 max-w-[720px] mx-auto rounded-xl border border-hairline bg-surface-soft px-6 py-5 text-sm text-muted leading-relaxed">
           <ul className="space-y-1.5">
             <li>· 본 상품은 온라인 강의 <strong className="text-body">디지털 콘텐츠</strong>입니다. 실물 배송이 없습니다.</li>
-            <li>· 결제 완료 즉시 <strong className="text-body">내 강의실</strong>에서 영구 수강권이 부여됩니다.</li>
+            <li>· 결제 완료 즉시 <strong className="text-body">내 강의실</strong>에서 수강권이 부여됩니다.</li>
+            <li>· 수강 가능 기간은 <strong className="text-body">결제일로부터 12개월</strong>이며, 기간이 지나면 해당 강의와 연결 자료의 이용이 종료됩니다.</li>
             <li>· 결제는 <strong className="text-body">포트원(PortOne)</strong>으로 안전하게 처리되며, 회사는 카드정보를 보관하지 않습니다.</li>
             <li>
               · 구매 전{" "}

@@ -5,6 +5,7 @@ import {
   getPortonePayment,
   isPortoneConfigured,
 } from "@/lib/server/portone";
+import { computeExpiresAt } from "@/lib/enrollment";
 
 export const dynamic = "force-dynamic";
 
@@ -50,7 +51,7 @@ export async function POST(req: NextRequest) {
   // 3) 강의 가격 확인 (service role — 신뢰 가능한 금액 출처)
   const { data: course } = await adminClient
     .from("courses")
-    .select("id, price, tier, published, title, slug")
+    .select("id, price, tier, published, title, slug, access_months")
     .eq("id", courseId)
     .single();
 
@@ -116,6 +117,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: payErr.message }, { status: 500 });
   }
 
+  // 만료일은 "결제 완료 시각" 기준으로 계산한다. 이 라우트와 웹훅이 같은 결제를
+  // 중복 처리해도 결과가 같아야 하므로 NOW()가 아니라 paidAt을 기산점으로 쓴다.
+  const paidAt = payment.paidAt ? new Date(payment.paidAt) : new Date();
+  const expiresAt = computeExpiresAt(course.access_months, paidAt);
+
   const { error: enrErr } = await adminClient.from("enrollments").upsert(
     {
       user_id: user.id,
@@ -123,6 +129,7 @@ export async function POST(req: NextRequest) {
       status: "active",
       source: "payment",
       payment_id: paymentId,
+      expires_at: expiresAt,
     },
     { onConflict: "user_id,course_id" }
   );
@@ -135,5 +142,6 @@ export async function POST(req: NextRequest) {
     courseId: course.id,
     title: course.title,
     slug: course.slug,
+    expiresAt,
   });
 }

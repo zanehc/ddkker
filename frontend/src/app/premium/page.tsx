@@ -3,6 +3,7 @@ import { isUserAdmin } from "@/lib/server/authz";
 import { PremiumCourses } from "@/components/sections/PremiumCourses";
 import { FaqAccordion } from "@/components/sections/FaqAccordion";
 import { BusinessInfo } from "@/components/legal/BusinessInfo";
+import { activeEnrollmentFilter } from "@/lib/enrollment";
 import type { Faq, Course } from "@/types";
 
 // 상태별 CTA(미로그인/미구매/구매완료)를 위해 유저별 동적 렌더링
@@ -11,7 +12,7 @@ export const dynamic = "force-dynamic";
 export const metadata = {
   title: "프리미엄",
   description:
-    "Claude·Codex·Antigravity와 로컬AI를 활용한 토큰절약 전략 등 고급 강의를 강의별로 구매해 영구 수강하세요.",
+    "Claude·Codex·Antigravity와 로컬AI를 활용한 토큰절약 전략 등 고급 강의를 강의별로 구매해 12개월간 수강하세요.",
 };
 
 export default async function PremiumPage() {
@@ -45,7 +46,8 @@ export default async function PremiumPage() {
         .from("enrollments")
         .select("course_id")
         .eq("user_id", user.id)
-        .eq("status", "active");
+        .eq("status", "active")
+        .or(activeEnrollmentFilter());
       enrolledCourseIds = (enr ?? []).map((e) => e.course_id as number);
     }
   }
@@ -68,7 +70,7 @@ export default async function PremiumPage() {
           <h1 className="text-display-lg font-bold text-ink mb-4">프리미엄</h1>
           <p className="text-muted text-lg max-w-[560px] mx-auto">
             구독이 아닌 강의별 개별 구매. 필요한 고급 강의만 골라 한 번 결제하면
-            소스코드와 자료까지 평생 소장합니다.
+            소스코드와 자료까지 12개월간 이용할 수 있습니다.
           </p>
         </div>
       </section>
@@ -91,8 +93,8 @@ export default async function PremiumPage() {
             {[
               {
                 icon: "🎓",
-                title: "1회 구매 · 영구 수강",
-                desc: "구독이 아니라 소유. 한 번 구매한 강의는 기간 제한 없이 평생 다시 볼 수 있습니다.",
+                title: "1회 구매 · 12개월 수강",
+                desc: "구독 자동결제가 아닌 1회 결제. 결제일로부터 12개월 동안 횟수 제한 없이 다시 볼 수 있습니다.",
               },
               {
                 icon: "📦",

@@ -5,6 +5,7 @@ import {
   verifyPortoneWebhook,
   isPortoneConfigured,
 } from "@/lib/server/portone";
+import { computeExpiresAt } from "@/lib/enrollment";
 import type { PaymentStatus } from "@/types";
 
 export const dynamic = "force-dynamic";
@@ -131,6 +132,17 @@ export async function POST(req: NextRequest) {
   );
 
   if (enrollmentStatus === "active") {
+    // /complete 와 동일한 기산점(paidAt)·동일한 개월 수로 계산해야 웹훅 재전송이
+    // 만료일을 뒤로 밀지 않는다.
+    const { data: courseRow } = await adminClient
+      .from("courses")
+      .select("access_months")
+      .eq("id", courseId)
+      .maybeSingle();
+
+    const paidAt = payment.paidAt ? new Date(payment.paidAt) : new Date();
+    const expiresAt = computeExpiresAt(courseRow?.access_months ?? null, paidAt);
+
     await adminClient.from("enrollments").upsert(
       {
         user_id: userId,
@@ -138,6 +150,7 @@ export async function POST(req: NextRequest) {
         status: "active",
         source: "payment",
         payment_id: paymentId,
+        expires_at: expiresAt,
       },
       { onConflict: "user_id,course_id" }
     );

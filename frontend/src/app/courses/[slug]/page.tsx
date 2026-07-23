@@ -8,6 +8,7 @@ import { notFound } from "next/navigation";
 import type { Course } from "@/types";
 import type { Metadata } from "next";
 import { getCourseThumbnail } from "@/lib/course-thumbnails";
+import { activeEnrollmentFilter } from "@/lib/enrollment";
 
 interface PageProps {
   params: { slug: string };
@@ -59,6 +60,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
         .eq("user_id", user.id)
         .eq("course_id", course.id)
         .eq("status", "active")
+        .or(activeEnrollmentFilter())
         .maybeSingle(),
       adminClient
         .from("admin_users")

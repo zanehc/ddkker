@@ -3,6 +3,7 @@ import { isUserAdmin } from "@/lib/server/authz";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getCourseThumbnail } from "@/lib/course-thumbnails";
+import { activeEnrollmentFilter } from "@/lib/enrollment";
 
 export const dynamic = "force-dynamic";
 
@@ -37,12 +38,13 @@ export default async function ClassroomPage() {
 
   const isPremium = !!membership;
 
-  // 1-2. 강의별 구매(수강권) 조회 — 1회 구매 = 영구 수강
+  // 1-2. 강의별 구매(수강권) 조회 — 구매일로부터 12개월간 유효(만료분 제외)
   const { data: enrollmentRows } = await supabase
     .from("enrollments")
     .select("course_id")
     .eq("user_id", user.id)
-    .eq("status", "active");
+    .eq("status", "active")
+    .or(activeEnrollmentFilter());
   const enrolledIds = new Set(
     (enrollmentRows ?? []).map((e) => e.course_id as number)
   );

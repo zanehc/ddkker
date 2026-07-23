@@ -31,6 +31,8 @@ export interface PortonePayment {
   amount: { total: number };
   orderName?: string;
   customData?: string | Record<string, unknown>;
+  /** 결제 완료 시각(ISO). 수강권 만료일 기산점 — 웹훅이 재전송돼도 값이 변하지 않는다. */
+  paidAt?: string;
   // 원본 전체 (payments.raw 저장용)
   raw: Record<string, unknown>;
 }
@@ -64,6 +66,7 @@ export async function getPortonePayment(paymentId: string): Promise<PortonePayme
     amount: { total: Number(amount.total ?? 0) },
     orderName: data.orderName as string | undefined,
     customData: data.customData as PortonePayment["customData"] | undefined,
+    paidAt: data.paidAt as string | undefined,
     raw: data,
   };
 }

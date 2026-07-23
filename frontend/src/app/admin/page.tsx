@@ -1,6 +1,7 @@
 import { requireAdmin } from "@/lib/server/authz";
 import { adminClient } from "@/lib/server/admin-client";
 import { SOURCE_LABELS, STATUS_LABELS } from "@/lib/inquiry";
+import { activeEnrollmentFilter } from "@/lib/enrollment";
 import type { InquirySource, InquiryStatus } from "@/types";
 import Link from "next/link";
 
@@ -41,7 +42,11 @@ export default async function AdminDashboard() {
       .from("courses")
       .select("id, title, slug, tier, price, published")
       .order("sort_order", { ascending: true }),
-    adminClient.from("enrollments").select("course_id").eq("status", "active"),
+    adminClient
+      .from("enrollments")
+      .select("course_id")
+      .eq("status", "active")
+      .or(activeEnrollmentFilter()),
     adminClient
       .from("payments")
       .select("payment_id, course_id, amount, created_at, user_id, profiles(display_name)")
